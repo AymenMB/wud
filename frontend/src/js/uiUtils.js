@@ -36,7 +36,7 @@ export function displayMessage(targetElement, message, type = 'info') {
 export function setLoadingState(buttonElement, isLoading, loadingText = 'Chargement...') {
     const btn = typeof buttonElement === 'string' ? document.querySelector(buttonElement) : buttonElement;
     if (!btn) {
-        if (import.meta.env.DEV) console.warn("setLoadingState: Button element not found", buttonElement);
+        console.warn("setLoadingState: Button element not found", isLoading);
         return;
     }
 
@@ -48,9 +48,14 @@ export function setLoadingState(buttonElement, isLoading, loadingText = 'Chargem
         btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span class="ml-2">${loadingText}</span>`;
         btn.disabled = true;
     } else {
-        if (btn.dataset.originalContent) {
-            btn.innerHTML = btn.dataset.originalContent;
-            delete btn.dataset.originalContent; // Nettoyer l'attribut
+        // Safely restore original content
+        try {
+            if (btn.dataset && btn.dataset.originalContent) {
+                btn.innerHTML = btn.dataset.originalContent;
+                delete btn.dataset.originalContent; // Nettoyer l'attribut
+            }
+        } catch (error) {
+            console.warn("setLoadingState: Error restoring button content", error);
         }
         btn.disabled = false;
     }
@@ -109,4 +114,46 @@ export function debounce(func, wait, immediate) {
         timeout = setTimeout(later, wait);
         if (callNow) func(...args);
     };
+}
+
+/**
+ * Load a component from a URL and insert it into a placeholder
+ * @param {string} componentPath - Path to the component HTML file
+ * @param {string} placeholderId - ID of the placeholder element
+ * @param {Function} callback - Optional callback function to execute after loading
+ */
+export async function loadComponent(componentPath, placeholderId, callback) {
+    const placeholder = document.getElementById(placeholderId);
+    if (!placeholder) {
+        devWarn(`loadComponent: Placeholder element not found for ID: ${placeholderId}`);
+        return;
+    }
+    try {
+        const response = await fetch(componentPath);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch component ${componentPath}: ${response.statusText}`);
+        }
+        const html = await response.text();
+        placeholder.innerHTML = html;
+        if (callback) callback();
+    } catch (error) {
+        appError(`Error loading component ${componentPath}`, error);
+        if (placeholder) {
+            placeholder.innerHTML = `<p class="text-red-500 text-center">Error loading ${placeholderId}.</p>`;
+        }
+    }
+}
+
+/**
+ * Load header component
+ */
+export async function loadHeader() {
+    await loadComponent('/src/components/header.html', 'header-placeholder');
+}
+
+/**
+ * Load footer component
+ */
+export async function loadFooter() {
+    await loadComponent('/src/components/footer.html', 'footer-placeholder');
 }

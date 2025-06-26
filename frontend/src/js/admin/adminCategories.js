@@ -172,65 +172,76 @@ export async function loadAdminCategories() {
         return;
     }
 
-    categoryListContainer.innerHTML = `
-        <div class="flex justify-between items-center mb-6">
-            <div>
-                <h2 class="text-2xl font-semibold text-wud-primary">📁 Gestion des Catégories</h2>
-                <p class="text-gray-600 mt-1">Organisez vos produits par catégories</p>
+    // Chercher d'abord s'il y a déjà un conteneur interne
+    let innerContainer = categoryListContainer.querySelector('.categories-inner-container');
+    
+    if (!innerContainer) {
+        // Si pas de conteneur interne, créer la structure complète
+        categoryListContainer.innerHTML = `
+            <div class="categories-inner-container">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-wud-primary">📁 Gestion des Catégories</h2>
+                        <p class="text-gray-600 mt-1">Organisez vos produits par catégories</p>
+                    </div>
+                    <button id="add-new-category-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium shadow-lg transition-colors flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Ajouter une Catégorie
+                    </button>
+                </div>
+                
+                <div id="admin-category-form-container" class="mb-6"></div>
+                
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div class="p-4 bg-gray-50 border-b">
+                        <h3 class="text-lg font-medium text-gray-800">Liste des Catégories</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catégorie</th>
+                                    <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                    <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent</th>
+                                    <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produits</th>
+                                    <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                                    <th class="py-3 px-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-category-list-table-body" class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td colspan="6" class="py-4 px-3 text-center text-gray-500">
+                                        Chargement des catégories...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <button id="add-new-category-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium shadow-lg transition-colors flex items-center">
-                <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Ajouter une Catégorie
-            </button>
-        </div>
-        
-        <div id="admin-category-form-container" class="mb-6"></div>
-        
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-            <div class="p-4 bg-gray-50 border-b">
-                <h3 class="text-lg font-medium text-gray-800">Liste des Catégories</h3>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catégorie</th>
-                            <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent</th>
-                            <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produits</th>
-                            <th class="py-3 px-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                            <th class="py-3 px-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-category-list-table-body">
-                        <tr><td colspan="6" class="text-center py-4 text-wud-secondary">Chargement des catégories...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-
-    // Event listener pour le bouton d'ajout
-    const addNewCategoryBtn = document.getElementById('add-new-category-btn');
-    if (addNewCategoryBtn) {
-        addNewCategoryBtn.addEventListener('click', () => {
-            renderCategoryForm({}, 'admin-category-form-container', 'create');
-        });
+        `;
+        innerContainer = categoryListContainer.querySelector('.categories-inner-container');
     }
 
-    // Charger les catégories
+    // Charger les catégories dans le tableau
     try {
         const categories = await categoryAdminAPI.getAll();
         renderCategoryTable(categories);
         attachCategoryTableActionListeners();
-    } catch (error) {
-        appError("Error loading admin categories", error);
-        const tableBody = document.getElementById('admin-category-list-table-body');
-        if(tableBody) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-red-500">❌ Erreur de chargement des catégories.</td></tr>';
+        
+        // Attacher les événements du bouton d'ajout
+        const addBtn = document.getElementById('add-new-category-btn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                renderCategoryForm({}, 'admin-category-form-container', 'create');
+            });
         }
+        
+    } catch (error) {
+        appError("Failed to load categories", error);
+        renderCategoryTable([]);
     }
 }
 

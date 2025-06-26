@@ -2,6 +2,7 @@ import { authAPI } from './api.js';
 // Importer pour vider/mettre à jour le panier au logout/login (sera créé plus tard)
 // import { updateCartOnAuthChange } from './cart.js';
 // import { updateWishlistOnAuthChange } from './wishlist.js';
+import { setupAdminUI } from './admin/uiAdmin.js';
 
 const USER_INFO_KEY = 'wudUserInfo';
 const AUTH_TOKEN_KEY = 'authToken';
@@ -112,6 +113,9 @@ export function updateUserUI() {
             mobileUserAccountLink.href = '/src/pages/login.html';
         }
     }
+    
+    // Mettre à jour l'affichage du bouton admin
+    setupAdminUI();
 }
 
 export function checkAuthState() {

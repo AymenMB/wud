@@ -492,14 +492,20 @@ function showBlogPostFormModal(postId = null) {
         e.preventDefault();
         
         const formData = {
-            title: document.getElementById('blog-title').value,
-            category: document.getElementById('blog-category').value,
-            excerpt: document.getElementById('blog-excerpt').value,
-            content: document.getElementById('blog-content').value,
+            title: document.getElementById('blog-title').value.trim(),
+            category: document.getElementById('blog-category').value.trim(),
+            excerpt: document.getElementById('blog-excerpt').value.trim(),
+            content: document.getElementById('blog-content').value.trim(),
             status: document.getElementById('blog-status').value,
             isFeatured: document.getElementById('blog-featured').checked,
             tags: document.getElementById('blog-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
         };
+        
+        // Validation côté client
+        if (!formData.title || !formData.content) {
+            alert('Le titre et le contenu sont requis.');
+            return;
+        }
         
         try {
             if (isEdit) {
@@ -513,7 +519,8 @@ function showBlogPostFormModal(postId = null) {
             
         } catch (error) {
             console.error('Erreur lors de la sauvegarde:', error);
-            alert('Erreur lors de la sauvegarde de l\'article');
+            const errorMessage = error.data?.message || error.message || 'Erreur lors de la sauvegarde de l\'article';
+            alert(errorMessage);
         }
     });
 }

@@ -65,7 +65,7 @@ async function loadBlogPosts() {
 
     devLog("Loading blog posts with params:", params);
     try {
-        const data = await blogAPI.getAllPosts(params); // API s'attend à `status` pour filtrer les publiés
+        const data = await blogAPI.getAllPublished(params); // API s'attend à `status` pour filtrer les publiés
         const { posts, count, pages } = data;
 
         if (posts && posts.length > 0) {

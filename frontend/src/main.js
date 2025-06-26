@@ -69,7 +69,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   } else if (bodyId === 'blog-post-page') { // Ajouté
     if (typeof initBlogPostPage === 'function') initBlogPostPage();
   } else if (bodyId === 'admin-dashboard-page') {
-    // initAdminDashboard est auto-appelé
+    // initAdminDashboard est auto-appelé via DOMContentLoaded dans adminDashboard.js
+    console.log('Admin dashboard page detected - initialization will be handled by adminDashboard.js');
   }
   // Les pages login et register gèrent leur propre initialisation.
   // order-confirmation.html a son propre script inline simple.

@@ -590,6 +590,13 @@ export async function loadAdminProducts() {
         productManagementState.categories = [];
     }
 
+    // Vérifier si le contenu est déjà chargé (pour éviter de recharger à chaque fois)
+    if (productListContainer.dataset.loaded === 'true') {
+        // Juste recharger les données sans recréer l'interface
+        await loadProductsWithFilters();
+        return;
+    }
+
     productListContainer.innerHTML = `
         <div class="flex justify-between items-center mb-6">
             <div>
@@ -636,6 +643,9 @@ export async function loadAdminProducts() {
             <div id="product-pagination"></div>
         </div>
     `;
+
+    // Marquer comme chargé pour éviter de recharger à chaque navigation
+    productListContainer.dataset.loaded = 'true';
 
     // Rendre les filtres
     renderProductFilters();

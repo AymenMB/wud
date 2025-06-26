@@ -106,11 +106,17 @@ export const orderAPI = {
 };
 
 export const blogAPI = {
+    // Public routes
+    getAllPosts: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return apiRequest(`/blog/posts${queryParams ? '?' + queryParams : ''}`);
+    },
     getAllPublished: (params = {}) => {
         const queryParams = new URLSearchParams(params).toString();
         return apiRequest(`/blog/posts${queryParams ? '?' + queryParams : ''}`);
     },
     getBySlug: (slug) => apiRequest(`/blog/posts/${slug}`),
+    getPostBySlug: (slug) => apiRequest(`/blog/posts/${slug}`),
     // Admin routes
     getAllAdmin: (params = {}) => {
         const queryParams = new URLSearchParams(params).toString();
@@ -184,4 +190,49 @@ export const categoryAdminAPI = {
     update: (id, categoryData) => apiRequest(`/categories/admin/${id}`, 'PUT', categoryData, true),
     delete: (id) => apiRequest(`/categories/admin/${id}`, 'DELETE', null, true),
     getStats: () => apiRequest('/categories/admin/stats', 'GET', null, true),
+};
+
+// Orders admin API
+export const orderAdminAPI = {
+    getAll: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return apiRequest(`/orders/admin/allorders${queryParams ? '?' + queryParams : ''}`, 'GET', null, true);
+    },
+    getById: (id) => apiRequest(`/orders/${id}`, 'GET', null, true),
+    updateStatus: (id, status) => apiRequest(`/orders/admin/${id}/status`, 'PUT', { status }, true),
+};
+
+// Users admin API 
+export const userAdminAPI = {
+    getAll: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return apiRequest(`/users${queryParams ? '?' + queryParams : ''}`, 'GET', null, true);
+    },
+    getById: (id) => apiRequest(`/users/${id}`, 'GET', null, true),
+    create: (userData) => apiRequest('/users', 'POST', userData, true),
+    update: (id, userData) => apiRequest(`/users/${id}`, 'PUT', userData, true),
+    delete: (id) => apiRequest(`/users/${id}`, 'DELETE', null, true),
+};
+
+// Custom requests admin API
+export const customRequestAdminAPI = {
+    getAll: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return apiRequest(`/custom-requests/admin/all${queryParams ? '?' + queryParams : ''}`, 'GET', null, true);
+    },
+    getById: (id) => apiRequest(`/custom-requests/admin/${id}`, 'GET', null, true),
+    update: (id, data) => apiRequest(`/custom-requests/admin/${id}`, 'PUT', data, true),
+    delete: (id) => apiRequest(`/custom-requests/admin/${id}`, 'DELETE', null, true),
+};
+
+// Blog posts admin API
+export const blogPostAdminAPI = {
+    getAll: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return apiRequest(`/blog/admin/posts/all${queryParams ? '?' + queryParams : ''}`, 'GET', null, true);
+    },
+    getById: (id) => apiRequest(`/blog/admin/posts/${id}`, 'GET', null, true),
+    create: (postData) => apiRequest('/blog/admin/posts', 'POST', postData, true),
+    update: (id, postData) => apiRequest(`/blog/admin/posts/${id}`, 'PUT', postData, true),
+    delete: (id) => apiRequest(`/blog/admin/posts/${id}`, 'DELETE', null, true),
 };

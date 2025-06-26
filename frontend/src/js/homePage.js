@@ -144,7 +144,8 @@ async function loadLatestBlogPosts() {
     if (!blogPostsGrid) return;
     blogPostsGrid.innerHTML = '<p class="col-span-full text-center py-8">Chargement des articles...</p>';
     try {
-        const { posts } = await blogAPI.getAllPosts({ pageSize: MAX_LATEST_POSTS, status: 'published', sort: 'publishedAt:desc' });
+        const response = await blogAPI.getAllPublished({ pageSize: MAX_LATEST_POSTS });
+        const posts = response.posts || response; // Handle different response formats
         if (posts && posts.length > 0) {
             blogPostsGrid.innerHTML = posts.map(createBlogPostCard).join('');
         } else {

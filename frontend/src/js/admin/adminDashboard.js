@@ -1,5 +1,5 @@
-import { loadHeader, loadFooter, displayMessage, setLoadingState, devLog, appError } from '../uiUtils.js';
-import { authAPI, productAdminAPI, categoryAdminAPI, userAdminAPI, dashboardAPI } from '../api.js';
+import { displayMessage, setLoadingState, devLog, appError } from '../uiUtils.js';
+import { authAPI, productAdminAPI, categoryAdminAPI, userAdminAPI, orderAdminAPI, customRequestAdminAPI, blogPostAdminAPI, dashboardAPI } from '../api.js';
 import { loadAdminProducts } from './adminProducts.js';
 import { loadAdminCategories } from './adminCategories.js';
 import { loadAdminUsers } from './adminUsers.js';
@@ -16,52 +16,96 @@ let adminState = {
 
 // Initialiser le dashboard admin
 export async function initAdminDashboard() {
+    console.log('🚀 Initializing admin dashboard...');
     devLog('Initializing admin dashboard...');
-    
-    // Charger header et footer
-    await loadHeader();
-    await loadFooter();
     
     // Vérifier l'authentification admin
     try {
+        console.log('🔐 Checking admin authentication...');
         const user = await authAPI.getProfile();
+        console.log('👤 User profile received:', user);
+        
         if (!user || user.role !== 'admin') {
+            console.log('❌ User is not admin, redirecting to login');
             window.location.href = '/src/pages/login.html?redirect=' + encodeURIComponent(window.location.pathname);
             return;
         }
         adminState.user = user;
+        console.log('✅ Admin user authenticated:', user);
         devLog('Admin user authenticated:', user);
     } catch (error) {
+        console.error('❌ Authentication failed:', error);
         appError('Authentication failed', error);
         window.location.href = '/src/pages/login.html';
         return;
     }
     
+    console.log('🧭 Initializing navigation...');
     // Initialiser la navigation
     initAdminNavigation();
     
+    console.log('📊 Loading dashboard stats...');
     // Charger les statistiques du dashboard
     await loadDashboardStats();
     
+    console.log('🔗 Handling initial route...');
     // Gérer l'URL actuelle pour afficher la bonne section
     handleInitialRoute();
+    
+    console.log('✅ Admin dashboard initialization completed');
 }
 
 // Initialiser la navigation du menu admin
 function initAdminNavigation() {
+    console.log('🧭 Setting up admin navigation...');
     const navLinks = document.querySelectorAll('.admin-nav-link');
+    console.log('📋 Found navigation links:', navLinks.length);
     
-    navLinks.forEach(link => {
+    navLinks.forEach((link, index) => {
+        console.log(`🔗 Setting up link ${index + 1}:`, link.dataset.section);
         link.addEventListener('click', async (e) => {
             e.preventDefault();
             const section = link.dataset.section;
+            console.log('👆 Navigation clicked:', section);
             await switchAdminSection(section);
             
             // Mettre à jour l'URL sans recharger la page
             const url = new URL(window.location);
             url.hash = section;
             history.pushState(null, '', url.toString());
+            console.log('🔗 URL updated to:', url.toString());
         });
+    });
+    console.log('✅ Admin navigation setup completed');
+}
+
+// Fonction pour s'assurer que toutes les sections existent
+function ensureAllSectionsExist() {
+    const requiredSections = [
+        'dashboard-overview-content',
+        'products-management-content',
+        'categories-management-content',
+        'orders-management-content',
+        'users-management-content',
+        'custom-requests-management-content',
+        'blog-posts-management-content'
+    ];
+    
+    const mainContent = document.getElementById('admin-main-content');
+    if (!mainContent) {
+        console.error('❌ Main content container not found!');
+        return;
+    }
+    
+    requiredSections.forEach(sectionId => {
+        if (!document.getElementById(sectionId)) {
+            console.log('🔧 Creating missing section:', sectionId);
+            const section = document.createElement('div');
+            section.id = sectionId;
+            section.className = 'admin-section-content hidden';
+            section.innerHTML = getDefaultSectionContent(sectionId);
+            mainContent.appendChild(section);
+        }
     });
 }
 
@@ -84,9 +128,18 @@ function handleInitialRoute() {
 
 // Changer de section dans le dashboard admin
 async function switchAdminSection(sectionId) {
+    console.log('🔄 Switching to section:', sectionId);
+    
+    // S'assurer que toutes les sections essentielles existent
+    ensureAllSectionsExist();
+    
     // Masquer toutes les sections
     const sections = document.querySelectorAll('.admin-section-content');
-    sections.forEach(section => section.classList.add('hidden'));
+    console.log('📋 Found sections to hide:', sections.length);
+    sections.forEach(section => {
+        console.log('🙈 Hiding section:', section.id);
+        section.classList.add('hidden');
+    });
     
     // Retirer la classe active de tous les liens
     const navLinks = document.querySelectorAll('.admin-nav-link');
@@ -98,23 +151,41 @@ async function switchAdminSection(sectionId) {
     // Activer le lien correspondant
     const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
     if (activeLink) {
+        console.log('✅ Activating link for section:', sectionId);
         activeLink.classList.add('bg-wud-accent', 'text-white');
         activeLink.classList.remove('text-gray-700', 'hover:bg-wud-light', 'hover:text-wud-primary');
+    } else {
+        console.warn('⚠️ Active link not found for section:', sectionId);
     }
     
-    // Afficher la section correspondante
+    // Vérifier que la section cible existe après s'être assuré qu'elles existent toutes
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
+        console.log('👁️ Showing section:', sectionId);
         targetSection.classList.remove('hidden');
         adminState.currentSection = sectionId;
         
         // Charger le contenu spécifique selon la section
+        console.log('📄 Loading section content for:', sectionId);
         await loadSectionContent(sectionId);
+    } else {
+        console.error('❌ Target section not found even after ensuring all sections exist:', sectionId);
     }
 }
 
 // Charger le contenu spécifique de chaque section
 async function loadSectionContent(sectionId) {
+    // Sauvegarder les références aux sections avant de charger le contenu
+    const sections = {
+        'dashboard-overview-content': document.getElementById('dashboard-overview-content'),
+        'products-management-content': document.getElementById('products-management-content'),
+        'categories-management-content': document.getElementById('categories-management-content'),
+        'orders-management-content': document.getElementById('orders-management-content'),
+        'users-management-content': document.getElementById('users-management-content'),
+        'custom-requests-management-content': document.getElementById('custom-requests-management-content'),
+        'blog-posts-management-content': document.getElementById('blog-posts-management-content')
+    };
+    
     switch (sectionId) {
         case 'dashboard-overview-content':
             await loadDashboardOverview();
@@ -140,6 +211,66 @@ async function loadSectionContent(sectionId) {
         default:
             devLog(`Unknown section: ${sectionId}`);
     }
+    
+    // Vérifier et restaurer les sections si elles ont été supprimées
+    restoreMissingSections(sections);
+}
+
+// Fonction pour restaurer les sections manquantes
+function restoreMissingSections(originalSections) {
+    const mainContent = document.getElementById('admin-main-content');
+    if (!mainContent) return;
+    
+    Object.keys(originalSections).forEach(sectionId => {
+        if (!document.getElementById(sectionId)) {
+            console.log(`🔧 Restoring missing section: ${sectionId}`);
+            const section = document.createElement('div');
+            section.id = sectionId;
+            section.className = 'admin-section-content hidden';
+            
+            // Contenu par défaut pour chaque section
+            const defaultContent = getDefaultSectionContent(sectionId);
+            section.innerHTML = defaultContent;
+            
+            mainContent.appendChild(section);
+        }
+    });
+}
+
+// Contenu par défaut pour les sections
+function getDefaultSectionContent(sectionId) {
+    const contentMap = {
+        'dashboard-overview-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Vue d'ensemble</h2>
+            <p>Bienvenue sur le tableau de bord administrateur. Sélectionnez une section dans le menu pour commencer.</p>
+        `,
+        'products-management-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Gestion des Produits</h2>
+            <p>Chargement des produits...</p>
+        `,
+        'categories-management-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Gestion des Catégories</h2>
+            <p>Chargement des catégories...</p>
+        `,
+        'orders-management-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Gestion des Commandes</h2>
+            <p>Chargement des commandes...</p>
+        `,
+        'users-management-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Gestion des Utilisateurs</h2>
+            <p>Chargement des utilisateurs...</p>
+        `,
+        'custom-requests-management-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Gestion des Demandes sur Mesure</h2>
+            <p>Chargement des demandes...</p>
+        `,
+        'blog-posts-management-content': `
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6">Gestion des Articles de Blog</h2>
+            <p>Chargement des articles...</p>
+        `
+    };
+    
+    return contentMap[sectionId] || '<p>Section en cours de développement...</p>';
 }
 
 // Charger les statistiques du dashboard

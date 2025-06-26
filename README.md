@@ -1,123 +1,164 @@
-# Wud' - Application E-commerce Artisanale
+# Wud' - E-commerce Application
 
-Projet d'application e-commerce full-stack pour "Wud'", une boutique de mobilier haut de gamme en bois massif fait main.
+Wud' is a full-stack e-commerce platform for a high-end, handcrafted solid wood furniture store. This project provides a complete solution for both customers and administrators, including product browsing, cart/wishlist management, order processing, blog, newsletter, and a robust admin dashboard.
 
-## Structure du Projet
+---
 
-Le projet est divisé en deux principaux dossiers :
+## 🛠️ Tech Stack
 
-- `backend/`: Contient l'API RESTful développée avec Node.js, Express.js, et MongoDB (Mongoose).
-- `frontend/`: Contient l'application frontend statique construite avec HTML, Tailwind CSS, et JavaScript Vanilla (utilisant Vite comme outil de build).
+- **Backend:** Node.js, Express.js, MongoDB (Mongoose), JWT authentication
+- **Frontend:** HTML, Tailwind CSS, Vanilla JavaScript (with Vite for build)
+- **Database:** MongoDB
 
-## Stack Technique
+---
 
-**Backend:**
+## 📁 Project Structure
 
-- Node.js
-- Express.js
-- MongoDB (avec Mongoose)
-- JWT pour l'authentification
+- `backend/` — RESTful API (Node.js, Express, Mongoose)
+- `frontend/` — Static frontend (HTML, Tailwind CSS, JS, Vite)
+- `controllers/`, `models/`, `routes/`, `middleware/`, `utils/` — Backend logic
+- `backend/sample-data/` — Example data for MongoDB seeding
 
-**Frontend:**
+---
 
-- HTML, CSS, JavaScript (Vanilla)
-- Tailwind CSS
-- Vite (outil de build)
+## 🚀 Quick Start
 
-## Prérequis
-
-- Node.js (version 18.x ou supérieure recommandée)
-- npm (généralement inclus avec Node.js)
-- MongoDB (instance locale ou distante accessible)
-
-## Installation
-
-1.  **Cloner le dépôt (si applicable) :**
-
-    ```bash
-    git clone <url-du-depot>
-    cd wud-ecommerce
-    ```
-
-2.  **Installer les dépendances du Backend :**
-
-    ```bash
-    cd backend
-    npm install
-    ```
-
-3.  **Installer les dépendances du Frontend :**
-    ```bash
-    cd ../frontend
-    npm install
-    ```
-    _(Note: L'agent a configuré les fichiers mais n'a pas pu exécuter `npm install` dans le dossier frontend en raison de limitations du bac à sable. Vous devrez le faire manuellement)._
-
-## Configuration
-
-1.  **Backend :**
-
-    - À la racine du dossier `backend/`, copiez `.env.example` vers un nouveau fichier nommé `.env`.
-    - Modifiez les variables dans `.env` selon votre configuration :
-      - `MONGODB_URI`: Votre chaîne de connexion MongoDB (ex: `mongodb://localhost:27017/wud_db`).
-      - `PORT`: Le port sur lequel le serveur backend tournera (ex: 3000).
-      - `JWT_SECRET`: Une chaîne aléatoire forte pour signer les tokens JWT (ex: `votreSuperSecretDe32CaracteresMinimum`).
-      - `JWT_EXPIRES_IN`: Durée de validité des tokens (ex: `1h`, `7d`).
-      - `CORS_ORIGIN`: L'URL de votre frontend en développement (ex: `http://localhost:5173` si Vite tourne sur ce port). Pour la production, mettez l'URL de votre frontend déployé.
-      - `NODE_ENV`: `development` ou `production`.
-
-2.  **Frontend :**
-    - Dans `frontend/src/js/api.js`, la constante `BASE_URL` est définie sur `http://localhost:3000/api`. Ajustez-la si votre backend tourne sur un port différent en développement. En production, cette URL devra pointer vers votre API backend déployée.
-    - Vite est configuré pour servir le frontend. Le port par défaut est généralement `5173`.
-
-## Lancement de l'Application
-
-1.  **Démarrer le serveur Backend :**
-    Depuis le dossier `backend/` :
-
-    ```bash
-    npm run dev
-    ```
-
-    (Utilise `nodemon` pour le redémarrage automatique en développement)
-    Ou pour une exécution simple :
-
-    ```bash
-    npm start
-    ```
-
-2.  **Démarrer le serveur de développement Frontend :**
-    Depuis le dossier `frontend/` :
-    ```bash
-    npm run dev
-    ```
-    Ouvrez votre navigateur à l'adresse indiquée (généralement `http://localhost:5173`). Assurez-vous que le backend est démarré et accessible.
-
-## Build pour la Production (Frontend)
-
-Depuis le dossier `frontend/` :
+### 1. Clone the Repository
 
 ```bash
-npm run build
+git clone https://github.com/AymenMB/wud.git
+cd wud
 ```
 
-Les fichiers optimisés pour la production seront générés dans le dossier `frontend/dist/`. Ces fichiers peuvent ensuite être déployés sur un serveur statique.
+### 2. Install Dependencies
 
-## Fonctionnalités Implémentées (Résumé)
+#### Backend
 
-- **Backend :** API RESTful complète pour produits, catégories, utilisateurs (clients/admin), commandes, panier, wishlist, demandes sur mesure, articles de blog, inscriptions newsletter. Authentification JWT.
-- **Frontend :** Interface utilisateur pour parcourir les produits, gérer le panier/wishlist, passer des commandes, consulter son compte, lire le blog, soumettre des demandes sur mesure. Structure de base pour un dashboard admin.
+```bash
+cd backend
+npm install
+```
 
-## Données JSON Simulées
+#### Frontend
 
-Des fichiers d'exemples de données (`sample.products.json`, `sample.categories.json`, `sample.users.json`) sont fournis dans le dossier `backend/sample-data/`. Vous pouvez les utiliser pour peupler votre base de données MongoDB avec des outils comme `mongoimport` ou des scripts de seeding personnalisés.
-Pour `mongoimport` (assurez-vous que votre base de données s'appelle `wud_db` ou ajustez) :
+```bash
+cd ../frontend
+npm install
+```
+
+### 3. Configure Environment Variables
+
+- Copy `.env.example` to `.env` in `backend/` and edit as needed:
+  - `MONGODB_URI` (e.g. `mongodb://localhost:27017/wud_db`)
+  - `PORT` (default: 3000)
+  - `JWT_SECRET` (set a strong secret)
+  - `CORS_ORIGIN` (e.g. `http://localhost:5173`)
+
+### 4. Seed the Database (Optional)
+
+You can import sample data using `mongoimport`:
 
 ```bash
 mongoimport --db wud_db --collection users --file backend/sample-data/sample.users.json --jsonArray
 mongoimport --db wud_db --collection categories --file backend/sample-data/sample.categories.json --jsonArray
 mongoimport --db wud_db --collection products --file backend/sample-data/sample.products.json --jsonArray
-# (Répétez pour les autres collections si des données d'exemple sont fournies)
 ```
 
+Or run the provided script to initialize the database with default admin and categories:
+
+```bash
+node init-db.js
+```
+
+### 5. Start the Application
+
+#### Automatic (Windows)
+
+```powershell
+# Double-click start.bat or run:
+.\start.bat
+```
+
+#### Automatic (Linux/Mac)
+
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+#### Manual Start
+
+- **Backend:**
+  ```bash
+  cd backend
+  npm run dev
+  # or: npm start
+  ```
+- **Frontend:**
+  ```bash
+  cd frontend
+  npm run dev
+  ```
+
+Open your browser at [http://localhost:5173](http://localhost:5173) (frontend) and ensure the backend is running (default: [http://localhost:3000](http://localhost:3000)).
+
 ---
+
+## 🔑 Default Admin Credentials
+
+- **Email:** `admin@wud.com`
+- **Password:** `admin123`
+
+---
+
+## 🏗️ Features
+
+- **Backend:**
+  - RESTful API for products, categories, users, orders, cart, wishlist, custom requests, blog, newsletter
+  - JWT authentication (user/admin)
+  - Mongoose schemas and validation
+  - Admin dashboard endpoints
+- **Frontend:**
+  - Product catalog, detail, cart, wishlist, checkout
+  - User registration, login, profile
+  - Blog, newsletter, custom project requests
+  - Admin dashboard (manage products, users, orders, blog, etc.)
+
+---
+
+## 🧩 Code & Frameworks
+
+- **Node.js/Express:** API server, routing, middleware, authentication
+- **Mongoose:** MongoDB ODM, schema validation, population
+- **JWT:** Secure authentication for users/admins
+- **Tailwind CSS:** Modern, responsive UI
+- **Vite:** Fast frontend build tool
+
+---
+
+## 🗂️ Example Usage
+
+- **Seeding DB:** `node init-db.js` or use `mongoimport` as above
+- **Start backend:** `npm run dev` (in `backend/`)
+- **Start frontend:** `npm run dev` (in `frontend/`)
+- **Admin login:** Use default credentials above
+
+---
+
+## 📝 Notes
+
+- Adjust `frontend/src/js/api.js` `BASE_URL` if backend runs on a different port.
+- For production, build frontend with `npm run build` in `frontend/`.
+- MongoDB must be running locally or remotely.
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome! Please open issues for bugs or feature requests.
+
+---
+
+## 📄 License
+
+MIT
