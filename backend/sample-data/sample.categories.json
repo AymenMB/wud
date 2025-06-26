@@ -1,0 +1,29 @@
+[
+  {
+    "_id": { "$oid": "60c72b3a9b1e8a3f9c8b4570" },
+    "name": "Tables en Bois Massif",
+    "slug": "tables-en-bois-massif",
+    "description": "Découvrez notre sélection de tables robustes et élégantes, fabriquées à la main.",
+    "isFeatured": true,
+    "image": { "url": "https://via.placeholder.com/400x300.png/A07C5B/FFFFFF?text=Tables", "altText": "Tables en bois" },
+    "createdAt": { "$date": "2023-01-01T00:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "60c72b3a9b1e8a3f9c8b4571" },
+    "name": "Assises Artisanales",
+    "slug": "assises-artisanales",
+    "description": "Chaises, bancs et tabourets alliant confort et design.",
+    "isFeatured": true,
+    "image": { "url": "https://via.placeholder.com/400x300.png/4A3B31/FFFFFF?text=Assises", "altText": "Assises en bois" },
+    "createdAt": { "$date": "2023-01-01T00:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "60c72b3a9b1e8a3f9c8b4572" },
+    "name": "Rangements Design",
+    "slug": "rangements-design",
+    "description": "Bibliothèques, étagères et buffets fonctionnels et esthétiques.",
+    "isFeatured": false,
+    "image": { "url": "https://via.placeholder.com/400x300.png/D4A373/2C231E?text=Rangements", "altText": "Rangements en bois" },
+    "createdAt": { "$date": "2023-01-01T00:00:00Z" }
+  }
+]

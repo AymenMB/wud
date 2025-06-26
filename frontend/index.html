@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wud' - Mobilier Artisanal en Bois Massif</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+  <body id="home-page" class="bg-wud-light text-wud-dark font-sans antialiased">
+    <div id="app" class="flex flex-col min-h-screen">
+
+      <div id="header-placeholder"></div>
+
+      <main class="flex-grow">
+
+        <!-- Hero Section Moderne -->
+        <section id="hero-banner" class="relative bg-gradient-to-br from-wud-light via-white to-wud-cream min-h-[95vh] flex items-center overflow-hidden">
+          <!-- Éléments décoratifs de fond -->
+          <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-20 left-10 w-64 h-64 bg-wud-primary rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-wud-accent rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-wud-sand rounded-full blur-3xl"></div>
+          </div>
+          
+          <div class="container-wud relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+              
+              <!-- Contenu gauche -->
+              <div class="text-left animate-fade-in">
+                <div class="inline-flex items-center px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full text-sm font-medium text-wud-primary mb-8 shadow-wud-soft">
+                  <span class="w-2 h-2 bg-wud-accent rounded-full mr-3 animate-pulse"></span>
+                  Fait main • Bois massif • Artisanal français
+                </div>
+                
+                <h1 class="text-6xl lg:text-8xl font-serif font-bold mb-8 leading-none">
+                  <span class="text-wud-primary block animate-slide-up">Mobilier</span>
+                  <span class="text-wud-accent block animate-slide-up animate-delay-200">Artisanal</span>
+                  <span class="text-wud-secondary text-2xl lg:text-3xl font-normal block mt-4 animate-slide-up animate-delay-300">
+                    d'exception
+                  </span>
+                </h1>
+                
+                <p class="text-xl lg:text-2xl text-wud-secondary mb-10 max-w-2xl leading-relaxed animate-slide-up animate-delay-500">
+                  Créations uniques en bois massif, façonnées à la main dans notre atelier français. 
+                  Du sur-mesure qui raconte votre histoire.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-6 animate-slide-up animate-delay-500">
+                  <a href="/src/pages/catalog.html" 
+                     class="btn btn-primary btn-lg group">
+                    <span>Découvrir la Collection</span>
+                    <i class="fas fa-arrow-right ml-3 transition-transform group-hover:translate-x-1"></i>
+                  </a>
+                  <a href="/src/pages/custom-project.html" 
+                     class="btn btn-outline btn-lg group">
+                    <span>Projet Sur-Mesure</span>
+                    <i class="fas fa-ruler-combined ml-3 transition-transform group-hover:scale-110"></i>
+                  </a>
+                </div>
+                
+                <!-- Statistiques rapides -->
+                <div class="flex flex-wrap gap-8 mt-12 animate-slide-up animate-delay-500">
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-wud-primary">15+</div>
+                    <div class="text-sm text-wud-secondary">Années d'expérience</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-wud-primary">500+</div>
+                    <div class="text-sm text-wud-secondary">Créations réalisées</div>
+                  </div>
+                  <div class="text-center">
+                    <div class="text-3xl font-bold text-wud-primary">100%</div>
+                    <div class="text-sm text-wud-secondary">Satisfaction client</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Image/Contenu droite -->
+              <div class="relative animate-slide-in-right animate-delay-300">
+                <div class="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-wud-xl">
+                  <!-- Image principale -->
+                  <div class="relative overflow-hidden rounded-2xl mb-6">
+                    <img src="/src/assets/images/placeholder-product.svg" 
+                         alt="Mobilier artisanal Wud'" 
+                         class="w-full h-80 object-cover transform hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-wud-dark/20 to-transparent"></div>
+                  </div>
+                  
+                  <!-- Badges de qualité -->
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2 text-wud-primary">
+                      <i class="fas fa-leaf text-green-600"></i>
+                      <span class="font-medium text-sm">Éco-responsable</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-wud-primary">
+                      <i class="fas fa-hammer text-wud-accent"></i>
+                      <span class="font-medium text-sm">Fait main</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-wud-primary">
+                      <i class="fas fa-award text-yellow-600"></i>
+                      <span class="font-medium text-sm">Garanti 10 ans</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Éléments flottants décoratifs -->
+                <div class="absolute -top-6 -right-6 w-24 h-24 bg-wud-accent/20 rounded-full blur-xl animate-bounce-in animate-delay-500"></div>
+                <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-wud-primary/10 rounded-full blur-xl animate-bounce-in animate-delay-700"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section Dashboard/Statistiques -->
+        <section id="dashboard-overview" class="py-20 bg-white">
+          <div class="container-wud">
+            <!-- Titre de section -->
+            <div class="text-center mb-16 animate-fade-in">
+              <h2 class="dashboard-title">Notre Expertise en Chiffres</h2>
+              <p class="dashboard-subtitle max-w-2xl mx-auto">
+                Découvrez pourquoi nos clients nous font confiance pour leurs projets d'ameublement
+              </p>
+            </div>
+            
+            <!-- Grille de statistiques -->
+            <div class="stats-grid">
+              <div class="stat-card animate-scale-in animate-delay-100">
+                <div class="stat-icon primary">
+                  <i class="fas fa-tools"></i>
+                </div>
+                <div class="stat-value">15+</div>
+                <div class="stat-label">Années d'expérience artisanale</div>
+                <div class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +2 ans cette année
+                </div>
+              </div>
+              
+              <div class="stat-card animate-scale-in animate-delay-200">
+                <div class="stat-icon success">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-value">500+</div>
+                <div class="stat-label">Créations livrées</div>
+                <div class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +50 ce mois
+                </div>
+              </div>
+              
+              <div class="stat-card animate-scale-in animate-delay-300">
+                <div class="stat-icon warning">
+                  <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-value">4.9/5</div>
+                <div class="stat-label">Note de satisfaction</div>
+                <div class="stat-change positive">
+                  <i class="fas fa-arrow-up"></i> +0.2 ce trimestre
+                </div>
+              </div>
+              
+              <div class="stat-card animate-scale-in animate-delay-500">
+                <div class="stat-icon info">
+                  <i class="fas fa-seedling"></i>
+                </div>
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Bois éco-responsable</div>
+                <div class="stat-change positive">
+                  <i class="fas fa-leaf"></i> Certification FSC
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+                    Projet sur mesure
+                  </a>
+                </div>
+              </div>
+              
+              <!-- Right Image -->
+              <div class="relative">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-700">
+                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                       alt="Meuble artisanal en bois" 
+                       class="w-full h-[600px] object-cover">
+                  <div class="absolute inset-0 bg-gradient-to-t from-wud-dark/20 to-transparent"></div>
+                </div>
+                <!-- Floating Cards -->
+                <div class="absolute -bottom-8 -left-8 bg-white rounded-2xl p-6 shadow-xl border border-wud-light">
+                  <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-wud-accent/20 rounded-lg flex items-center justify-center">
+                      <svg class="w-6 h-6 text-wud-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-wud-dark">Qualité Premium</p>
+                      <p class="text-sm text-wud-secondary">Bois massif français</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="absolute -top-8 -right-8 bg-white rounded-2xl p-6 shadow-xl border border-wud-light">
+                  <div class="text-center">
+                    <p class="text-2xl font-bold text-wud-primary">15+</p>
+                    <p class="text-sm text-wud-secondary">Années d'expérience</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Categories Section - Modern Grid -->
+        <section id="top-categories" class="py-20 bg-white">
+          <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+              <h2 class="text-4xl font-serif font-bold text-wud-dark mb-4">Nos Collections</h2>
+              <p class="text-xl text-wud-secondary max-w-2xl mx-auto">
+                Découvrez notre gamme complète de mobilier artisanal, 
+                chaque pièce étant unique et façonnée avec passion.
+              </p>
+            </div>
+            
+            <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <!-- Category 1 - Seating -->
+              <div class="lg:col-span-2 lg:row-span-2">
+                <a href="catalog.html?category=seating" class="group relative block h-full min-h-[400px] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                       alt="Mobilier d'assise" 
+                       class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-8 left-8 text-white">
+                    <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm mb-3">
+                      BATH ROOM
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Assises</h3>
+                    <p class="text-sm opacity-90 max-w-xs">Chaises, fauteuils et bancs confortables</p>
+                  </div>
+                </a>
+              </div>
+              
+              <!-- Category 2 - Lighting -->
+              <div>
+                <a href="catalog.html?category=lighting" class="group relative block h-64 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <img src="https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                       alt="Éclairage" 
+                       class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 text-white">
+                    <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs mb-2">
+                      LIGHTING
+                    </div>
+                    <h3 class="text-lg font-bold">Éclairage</h3>
+                  </div>
+                </a>
+              </div>
+              
+              <!-- Category 3 - Living Room -->
+              <div>
+                <a href="catalog.html?category=living" class="group relative block h-64 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                       alt="Salon" 
+                       class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 text-white">
+                    <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs mb-2">
+                      LIVING ROOM
+                    </div>
+                    <h3 class="text-lg font-bold">Salon</h3>
+                  </div>
+                </a>
+              </div>
+              
+              <!-- Category 4 - Office -->
+              <div>
+                <a href="catalog.html?category=office" class="group relative block h-64 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                       alt="Bureau" 
+                       class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 text-white">
+                    <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs mb-2">
+                      OFFICE
+                    </div>
+                    <h3 class="text-lg font-bold">Bureau</h3>
+                  </div>
+                </a>
+              </div>
+              
+              <!-- Category 5 - Seating Small -->
+              <div>
+                <a href="catalog.html?category=seating" class="group relative block h-64 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                  <img src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                       alt="Assises" 
+                       class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-6 left-6 text-white">
+                    <div class="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs mb-2">
+                      SEATING
+                    </div>
+                    <h3 class="text-lg font-bold">Assises</h3>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Inspirational Split Section -->
+        <section class="py-20 bg-gradient-to-r from-wud-light to-white">
+          <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+              <!-- Left Content -->
+              <div class="space-y-8">
+                <div>
+                  <span class="text-wud-accent font-medium text-sm tracking-wide uppercase">FROM LOWEST TO SECTIONALS</span>
+                  <h2 class="text-4xl lg:text-5xl font-serif font-bold text-wud-dark mt-4 leading-tight">
+                    Comfy Lounging
+                  </h2>
+                  <p class="text-xl text-wud-secondary mt-6 leading-relaxed">
+                    Explore Collection
+                  </p>
+                </div>
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                       alt="Comfy Lounging" 
+                       class="w-full h-80 object-cover rounded-3xl">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-3xl"></div>
+                </div>
+              </div>
+              
+              <!-- Right Content -->
+              <div class="space-y-8">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                       alt="Scandinavian Style" 
+                       class="w-full h-80 object-cover rounded-3xl">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-3xl"></div>
+                  <div class="absolute bottom-8 left-8 text-white">
+                    <span class="text-sm font-medium">SAVE UP TO 50% OFF ALL ITEMS</span>
+                    <h3 class="text-2xl font-bold mt-2">Scandinavian Style</h3>
+                    <p class="text-sm opacity-90 mt-1">Explore Collection</p>
+                  </div>
+                </div>
+                <div>
+                  <span class="text-wud-accent font-medium text-sm tracking-wide uppercase">AVE UP TO 50% OFF ALL ITEMS</span>
+                  <h2 class="text-4xl lg:text-5xl font-serif font-bold text-wud-dark mt-4 leading-tight">
+                    Scandinavian Style
+                  </h2>
+                  <p class="text-xl text-wud-secondary mt-6 leading-relaxed">
+                    Explore Collection
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Featured Products - Modern Design -->
+        <section id="featured-products" class="py-12 md:py-16 bg-white">
+          <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-serif font-semibold text-center text-wud-primary mb-10">Nos Créations du Moment</h2>
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+              <!-- Produit Placeholder 1 -->
+              <div class="group rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white">
+                <a href="product-detail.html?id=1" class="block">
+                  <div class="h-72 bg-gray-300 bg-cover bg-center relative">
+                    <img src="https://via.placeholder.com/400x400.png/A07C5B/FFFFFF?text=Produit+1" alt="Nom du Produit 1" class="w-full h-full object-cover">
+                    <div class="absolute top-2 right-2 bg-wud-accent text-white text-xs font-semibold px-2 py-1 rounded hidden">PROMO</div>
+                  </div>
+                </a>
+                <div class="p-5 flex flex-col flex-grow">
+                  <h3 class="text-lg font-semibold text-wud-primary mb-1">
+                    <a href="product-detail.html?id=1" class="hover:text-wud-accent transition-colors">Table de Repas "Chêne Royal"</a>
+                  </h3>
+                  <p class="text-sm text-wud-secondary mb-3 flex-grow">Table robuste en chêne massif, finition huilée.</p>
+                  <div class="flex items-center justify-between mb-3">
+                    <p class="text-xl font-bold text-wud-primary">1200.00 €</p>
+                  </div>
+                  <div class="flex items-center space-x-2 mt-auto">
+                    <button data-product-id="1" class="add-to-cart-btn flex-1 bg-wud-primary hover:bg-wud-dark text-white text-sm font-medium py-2 px-3 rounded-md transition-colors">
+                      Ajouter au Panier
+                    </button>
+                    <button data-product-id="1" aria-label="Ajouter à la wishlist" class="add-to-wishlist-btn p-2 text-gray-400 hover:text-red-500 border rounded-md hover:border-red-300 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Produit Placeholder 2 -->
+              <div class="group rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white">
+                <a href="product-detail.html?id=2" class="block">
+                  <div class="h-72 bg-gray-300 bg-cover bg-center relative">
+                    <img src="https://via.placeholder.com/400x400.png/4A3B31/FFFFFF?text=Produit+2" alt="Nom du Produit 2" class="w-full h-full object-cover">
+                  </div>
+                </a>
+                <div class="p-5 flex flex-col flex-grow">
+                  <h3 class="text-lg font-semibold text-wud-primary mb-1">
+                    <a href="product-detail.html?id=2" class="hover:text-wud-accent transition-colors">Bibliothèque "Noyer Élégant"</a>
+                  </h3>
+                  <p class="text-sm text-wud-secondary mb-3 flex-grow">Design minimaliste, grande capacité.</p>
+                  <div class="flex items-center justify-between mb-3">
+                    <p class="text-xl font-bold text-wud-primary">850.00 €</p>
+                  </div>
+                  <div class="flex items-center space-x-2 mt-auto">
+                    <button data-product-id="2" class="add-to-cart-btn flex-1 bg-wud-primary hover:bg-wud-dark text-white text-sm font-medium py-2 px-3 rounded-md transition-colors">
+                      Ajouter au Panier
+                    </button>
+                    <button data-product-id="2" aria-label="Ajouter à la wishlist" class="add-to-wishlist-btn p-2 text-gray-400 hover:text-red-500 border rounded-md hover:border-red-300 transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Produit Placeholder 3 & 4 (simplifiés pour la longueur) -->
+              <div class="group rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white"><div class="h-72 bg-gray-300"><img src="https://via.placeholder.com/400x400.png/D4A373/2C231E?text=Produit+3" class="w-full h-full object-cover"/></div><div class="p-5"><h3 class="text-lg font-semibold">Produit 3</h3><p class="text-xl font-bold">Prix</p><button class="add-to-cart-btn">Ajouter</button></div></div>
+              <div class="group rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white"><div class="h-72 bg-gray-300"><img src="https://via.placeholder.com/400x400.png/2C231E/F0EFEB?text=Produit+4" class="w-full h-full object-cover"/></div><div class="p-5"><h3 class="text-lg font-semibold">Produit 4</h3><p class="text-xl font-bold">Prix</p><button class="add-to-cart-btn">Ajouter</button></div></div>
+            </div>
+            <div class="text-center mt-12">
+              <a href="catalog.html" class="bg-wud-accent hover:bg-opacity-80 text-wud-dark font-semibold py-3 px-8 rounded-md text-lg transition-colors shadow-lg hover:shadow-xl">
+                Voir Tout le Catalogue
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Aperçu du Journal/Blog -->
+        <section id="latest-posts" class="py-12 md:py-16 bg-wud-light">
+          <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-serif font-semibold text-center text-wud-primary mb-10">Notre Journal</h2>
+            <div id="blog-posts-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+              <!-- Article Placeholder 1 -->
+              <a href="blog-post.html?slug=titre-article-1" class="group block rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white">
+                <div class="h-52 bg-gray-300 bg-cover bg-center">
+                   <img src="https://via.placeholder.com/400x250.png/D4A373/2C231E?text=Blog+Post+1" alt="Titre de l'article 1" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                  <p class="text-xs text-wud-secondary mb-1">CATÉGORIE | 15 JUILLET 2024</p>
+                  <h3 class="text-lg font-semibold text-wud-primary group-hover:text-wud-accent transition-colors mb-2">L'art de choisir l'essence de bois parfaite</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed">Un guide pour comprendre les caractéristiques et les usages des bois que nous utilisons...</p>
+                </div>
+              </a>
+              <!-- Article Placeholder 2 -->
+              <a href="blog-post.html?slug=titre-article-2" class="group block rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white">
+                 <div class="h-52 bg-gray-300 bg-cover bg-center">
+                   <img src="https://via.placeholder.com/400x250.png/4A3B31/FFFFFF?text=Blog+Post+2" alt="Titre de l'article 2" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                  <p class="text-xs text-wud-secondary mb-1">DESIGN | 02 JUILLET 2024</p>
+                  <h3 class="text-lg font-semibold text-wud-primary group-hover:text-wud-accent transition-colors mb-2">Entretien de vos meubles en bois massif</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed">Nos conseils pour préserver la beauté de vos pièces Wud' pendant des années...</p>
+                </div>
+              </a>
+              <!-- Article Placeholder 3 -->
+              <a href="blog-post.html?slug=titre-article-3" class="group block rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 bg-white">
+                 <div class="h-52 bg-gray-300 bg-cover bg-center">
+                   <img src="https://via.placeholder.com/400x250.png/A07C5B/FFFFFF?text=Blog+Post+3" alt="Titre de l'article 3" class="w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                  <p class="text-xs text-wud-secondary mb-1">ATELIER | 20 JUIN 2024</p>
+                  <h3 class="text-lg font-semibold text-wud-primary group-hover:text-wud-accent transition-colors mb-2">Rencontre avec nos artisans ébénistes</h3>
+                  <p class="text-sm text-gray-600 leading-relaxed">Plongez dans les coulisses de notre atelier et découvrez le savoir-faire unique...</p>
+                </div>
+              </a>
+            </div>
+            <div class="text-center mt-12">
+              <a href="blog.html" class="text-wud-primary hover:text-wud-accent font-semibold transition-colors group">
+                Lire tous nos articles
+                <span aria-hidden="true" class="inline-block transform group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section Produits Populaires -->
+        <section id="featured-products" class="py-20 bg-gradient-to-br from-wud-cream to-white">
+          <div class="container-wud">
+            <div class="text-center mb-16 animate-fade-in">
+              <h2 class="dashboard-title">Nos Créations Populaires</h2>
+              <p class="dashboard-subtitle max-w-2xl mx-auto">
+                Découvrez les pièces favorites de nos clients, chacune reflétant notre savoir-faire artisanal
+              </p>
+            </div>
+            
+            <div class="grid-responsive">
+              <!-- Produit 1 -->
+              <div class="card hover:scale-105 animate-scale-in animate-delay-100">
+                <div class="relative overflow-hidden rounded-t-2xl">
+                  <img src="/src/assets/images/placeholder-product.svg" 
+                       alt="Table de salon artisanale" 
+                       class="w-full h-64 object-cover transition-transform duration-700 hover:scale-110">
+                  <div class="absolute top-4 left-4">
+                    <span class="badge badge-primary">Populaire</span>
+                  </div>
+                  <div class="absolute top-4 right-4">
+                    <button class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all">
+                      <i class="far fa-heart text-wud-primary hover:fas"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h3 class="text-xl font-semibold text-wud-primary mb-2">Table de Salon Oslo</h3>
+                  <p class="text-wud-secondary text-sm mb-4">Chêne massif • Design scandinave • Fait main</p>
+                  <div class="flex items-center justify-between">
+                    <div class="text-2xl font-bold text-wud-primary">890€</div>
+                    <button class="btn btn-primary btn-sm">
+                      <i class="fas fa-shopping-cart mr-2"></i>
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Produit 2 -->
+              <div class="card hover:scale-105 animate-scale-in animate-delay-200">
+                <div class="relative overflow-hidden rounded-t-2xl">
+                  <img src="/src/assets/images/placeholder-product.svg" 
+                       alt="Étagère murale design" 
+                       class="w-full h-64 object-cover transition-transform duration-700 hover:scale-110">
+                  <div class="absolute top-4 left-4">
+                    <span class="badge badge-success">Nouveau</span>
+                  </div>
+                  <div class="absolute top-4 right-4">
+                    <button class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all">
+                      <i class="far fa-heart text-wud-primary hover:fas"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h3 class="text-xl font-semibold text-wud-primary mb-2">Étagère Murale Bergen</h3>
+                  <p class="text-wud-secondary text-sm mb-4">Pin massif • Style industriel • Modulable</p>
+                  <div class="flex items-center justify-between">
+                    <div class="text-2xl font-bold text-wud-primary">450€</div>
+                    <button class="btn btn-primary btn-sm">
+                      <i class="fas fa-shopping-cart mr-2"></i>
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Produit 3 -->
+              <div class="card hover:scale-105 animate-scale-in animate-delay-300">
+                <div class="relative overflow-hidden rounded-t-2xl">
+                  <img src="/src/assets/images/placeholder-product.svg" 
+                       alt="Bureau artisanal en noyer" 
+                       class="w-full h-64 object-cover transition-transform duration-700 hover:scale-110">
+                  <div class="absolute top-4 left-4">
+                    <span class="badge badge-warning">Édition limitée</span>
+                  </div>
+                  <div class="absolute top-4 right-4">
+                    <button class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all">
+                      <i class="far fa-heart text-wud-primary hover:fas"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h3 class="text-xl font-semibold text-wud-primary mb-2">Bureau Stockholm</h3>
+                  <p class="text-wud-secondary text-sm mb-4">Noyer massif • Design épuré • Finition huilée</p>
+                  <div class="flex items-center justify-between">
+                    <div class="text-2xl font-bold text-wud-primary">1290€</div>
+                    <button class="btn btn-primary btn-sm">
+                      <i class="fas fa-shopping-cart mr-2"></i>
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="text-center mt-12">
+              <a href="/src/pages/catalog.html" class="btn btn-outline btn-lg">
+                Voir Toute la Collection
+                <i class="fas fa-arrow-right ml-3"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section Processus de Création -->
+        <section id="creation-process" class="py-20 bg-white">
+          <div class="container-wud">
+            <div class="text-center mb-16 animate-fade-in">
+              <h2 class="dashboard-title">Notre Processus Artisanal</h2>
+              <p class="dashboard-subtitle max-w-2xl mx-auto">
+                De l'idée à la réalisation, découvrez les étapes de création de vos meubles
+              </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <!-- Étape 1 -->
+              <div class="text-center animate-slide-up animate-delay-100">
+                <div class="w-20 h-20 bg-gradient-wud rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-lightbulb text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-wud-primary mb-3">1. Conception</h3>
+                <p class="text-wud-secondary">Nous étudions vos besoins et créons un design unique adapté à votre espace</p>
+              </div>
+              
+              <!-- Étape 2 -->
+              <div class="text-center animate-slide-up animate-delay-200">
+                <div class="w-20 h-20 bg-gradient-wud rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-tree text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-wud-primary mb-3">2. Sélection</h3>
+                <p class="text-wud-secondary">Choix minutieux du bois massif français, respectueux de l'environnement</p>
+              </div>
+              
+              <!-- Étape 3 -->
+              <div class="text-center animate-slide-up animate-delay-300">
+                <div class="w-20 h-20 bg-gradient-wud rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-hammer text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-wud-primary mb-3">3. Fabrication</h3>
+                <p class="text-wud-secondary">Façonnage à la main par nos artisans experts dans notre atelier français</p>
+              </div>
+              
+              <!-- Étape 4 -->
+              <div class="text-center animate-slide-up animate-delay-500">
+                <div class="w-20 h-20 bg-gradient-wud rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <i class="fas fa-shipping-fast text-3xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-wud-primary mb-3">4. Livraison</h3>
+                <p class="text-wud-secondary">Installation soignée chez vous avec garantie de satisfaction complète</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section Témoignages -->
+        <section id="testimonials" class="py-20 bg-gradient-to-br from-wud-light to-wud-cream">
+          <div class="container-wud">
+            <div class="text-center mb-16 animate-fade-in">
+              <h2 class="dashboard-title">Ils Nous Font Confiance</h2>
+              <p class="dashboard-subtitle max-w-2xl mx-auto">
+                Découvrez les retours de nos clients satisfaits
+              </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+              <!-- Témoignage 1 -->
+              <div class="card animate-scale-in animate-delay-100">
+                <div class="card-body">
+                  <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                  </div>
+                  <p class="text-wud-secondary mb-6 italic">
+                    "Un travail exceptionnel ! La table que j'ai commandée dépasse toutes mes attentes. 
+                    La qualité du bois et la finition sont remarquables."
+                  </p>
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 bg-wud-accent rounded-full flex items-center justify-center text-white font-semibold">
+                      MR
+                    </div>
+                    <div class="ml-4">
+                      <div class="font-semibold text-wud-primary">Aymen Mabrouk</div>
+                      <div class="text-sm text-wud-secondary">Architecte d'intérieur</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Témoignage 2 -->
+              <div class="card animate-scale-in animate-delay-200">
+                <div class="card-body">
+                  <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                  </div>
+                  <p class="text-wud-secondary mb-6 italic">
+                    "Service client exceptionnel et délais respectés. L'équipe de Wud' a su comprendre 
+                    exactement ce que je voulais pour mon salon."
+                  </p>
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 bg-wud-primary rounded-full flex items-center justify-center text-white font-semibold">
+                      PD
+                    </div>
+                    <div class="ml-4">
+                      <div class="font-semibold text-wud-primary">Selim jallouli</div>
+                      <div class="text-sm text-wud-secondary">Entrepreneur</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Témoignage 3 -->
+              <div class="card animate-scale-in animate-delay-300">
+                <div class="card-body">
+                  <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                  </div>
+                  <p class="text-wud-secondary mb-6 italic">
+                    "Du conseil à la livraison, tout a été parfait. Le bureau sur-mesure s'intègre 
+                    parfaitement dans mon espace de travail."
+                  </p>
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 bg-wud-secondary rounded-full flex items-center justify-center text-white font-semibold">
+                      SM
+                    </div>
+                    <div class="ml-4">
+                      <div class="font-semibold text-wud-primary">Aziz Ben Rejab</div>
+                      <div class="text-sm text-wud-secondary">Designer</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section Newsletter/CTA -->
+        <section id="newsletter-cta" class="py-20 bg-gradient-wud">
+          <div class="container-wud">
+            <div class="text-center text-white">
+              <h2 class="text-4xl lg:text-5xl font-serif font-bold mb-6">
+                Restez Inspiré
+              </h2>
+              <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+                Recevez nos dernières créations, conseils d'aménagement et offres exclusives
+              </p>
+              
+              <div class="max-w-md mx-auto">
+                <div class="flex flex-col sm:flex-row gap-4">
+                  <input type="email" 
+                         placeholder="Votre adresse email"
+                         class="flex-1 px-6 py-4 rounded-xl border-0 focus:ring-4 focus:ring-white/30 text-wud-primary">
+                  <button class="btn bg-white text-wud-primary hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold">
+                    S'inscrire
+                  </button>
+                </div>
+                <p class="text-sm mt-4 opacity-75">
+                  Pas de spam, désabonnement facile à tout moment
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <div id="footer-placeholder"></div>
+
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

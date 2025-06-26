@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion - Wud'</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-xl shadow-2xl">
+        <div>
+          <h2 class="mt-6 text-center text-3xl font-serif font-bold text-wud-primary">
+            Connectez-vous à votre compte
+          </h2>
+          <p class="mt-2 text-center text-sm text-wud-secondary">
+            Ou <a href="/src/pages/register.html" class="font-medium text-wud-accent hover:text-wud-primary">créez un nouveau compte</a>
+          </p>
+        </div>
+        <form id="login-form" class="mt-8 space-y-6" action="#" method="POST">
+          <input type="hidden" name="remember" value="true">
+          <div class="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label for="login-email" class="sr-only">Adresse email</label>
+              <input id="login-email" name="email" type="email" autocomplete="email" required
+                     class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-wud-accent focus:border-wud-accent focus:z-10 sm:text-sm"
+                     placeholder="Adresse email">
+            </div>
+            <div>
+              <label for="login-password" class="sr-only">Mot de passe</label>
+              <input id="login-password" name="password" type="password" autocomplete="current-password" required
+                     class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-wud-accent focus:border-wud-accent focus:z-10 sm:text-sm"
+                     placeholder="Mot de passe">
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input id="remember-me" name="remember-me" type="checkbox"
+                     class="h-4 w-4 text-wud-accent focus:ring-wud-primary border-gray-300 rounded">
+              <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                Se souvenir de moi
+              </label>
+            </div>
+
+            <div class="text-sm">
+              <a href="#" class="font-medium text-wud-accent hover:text-wud-primary">
+                Mot de passe oublié ?
+              </a>
+            </div>
+          </div>
+
+          <div id="login-message" class="text-sm text-red-600"></div>
+
+          <div>
+            <button type="submit"
+                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-wud-primary hover:bg-wud-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wud-accent transition-colors">
+              Se connecter
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/js/loginPage.js"></script>
+</body>
+</html>

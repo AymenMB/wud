@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmation de Commande - Wud'</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body id="order-confirmation-page" class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 flex items-center justify-center">
+      <div class="bg-white p-8 sm:p-10 rounded-xl shadow-2xl text-center max-w-lg w-full">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+          <svg class="h-10 w-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-serif font-bold text-wud-primary mb-3">Merci pour votre commande !</h1>
+        <p class="text-wud-secondary mb-2">Votre commande a été passée avec succès.</p>
+        <p class="text-sm text-gray-600 mb-1">Numéro de commande : <strong id="conf-order-id" class="text-wud-primary">N/A</strong></p>
+        <p class="text-sm text-gray-600 mb-6">Montant total : <strong id="conf-order-total" class="text-wud-primary">0.00 €</strong></p>
+
+        <p class="text-gray-700 mb-6">
+          Vous recevrez bientôt un email de confirmation avec les détails de votre commande et les informations de suivi.
+        </p>
+        <div class="space-y-3">
+            <a href="/src/pages/orders.html" class="block w-full bg-wud-primary hover:bg-wud-dark text-white font-semibold py-3 px-4 rounded-md transition-colors">
+                Voir mes commandes
+            </a>
+            <a href="/src/pages/catalog.html" class="block w-full bg-transparent hover:bg-wud-gray-light text-wud-primary font-semibold py-3 px-4 rounded-md border border-wud-primary transition-colors">
+                Continuer mes achats
+            </a>
+        </div>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+  <script type="module">
+    import { devLog } from '/src/js/uiUtils.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        devLog('Order confirmation page loaded.');
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        const totalAmount = urlParams.get('total');
+
+        const orderIdEl = document.getElementById('conf-order-id');
+        const orderTotalEl = document.getElementById('conf-order-total');
+
+        if (orderId && orderIdEl) {
+            orderIdEl.textContent = orderId;
+        }
+        if (totalAmount && orderTotalEl) {
+            orderTotalEl.textContent = parseFloat(totalAmount).toFixed(2) + ' €';
+        }
+    });
+  </script>
+</body>
+</html>

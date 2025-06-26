@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" /> <!-- Adapter le chemin si pages est un sous-dossier servi différemment -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalogue - Wud'</title>
+  <link rel="stylesheet" href="/src/style.css" /> <!-- Adapter le chemin -->
+</head>
+<body id="catalog-page" class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div class="mb-8 text-center">
+        <h1 class="text-4xl font-serif font-bold text-wud-primary">Notre Catalogue</h1>
+        <p class="text-lg text-wud-secondary mt-2">Explorez notre collection de mobilier artisanal en bois massif.</p>
+        
+        <!-- Search Bar -->
+        <div class="mt-6 max-w-md mx-auto">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="Rechercher des produits..." 
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wud-primary focus:border-transparent"
+            >
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Section Filtres -->
+        <aside id="catalog-filters-aside" class="md:w-1/4 lg:w-1/5 space-y-6">
+          <!-- Filtres par Catégorie -->
+          <div class="bg-white p-4 rounded-lg shadow-sm">
+            <h3 class="text-xl font-semibold text-wud-primary mb-3">Catégories</h3>
+            <ul class="space-y-2 text-sm" id="filter-categories">
+              <li>
+                <a href="#" class="text-wud-secondary hover:text-wud-accent transition-colors category-filter active" data-category-id="" data-category="all">
+                  📂 Toutes les catégories
+                </a>
+              </li>
+              <!-- Les catégories seront chargées dynamiquement ici -->
+            </ul>
+          </div>
+
+          <!-- Filtres par Essence de Bois -->
+          <div class="bg-white p-4 rounded-lg shadow-sm">
+            <h3 class="text-xl font-semibold text-wud-primary mb-3">Essence de Bois</h3>
+            <div class="space-y-2" id="filter-wood">
+              <label class="flex items-center space-x-2 text-wud-secondary hover:text-wud-accent cursor-pointer">
+                <input type="checkbox" name="wood" value="chene" class="form-checkbox rounded text-wud-accent focus:ring-wud-accent/50">
+                <span>🌳 Chêne</span>
+              </label>
+              <label class="flex items-center space-x-2 text-wud-secondary hover:text-wud-accent cursor-pointer">
+                <input type="checkbox" name="wood" value="noyer" class="form-checkbox rounded text-wud-accent focus:ring-wud-accent/50">
+                <span>🌰 Noyer</span>
+              </label>
+              <label class="flex items-center space-x-2 text-wud-secondary hover:text-wud-accent cursor-pointer">
+                <input type="checkbox" name="wood" value="pin" class="form-checkbox rounded text-wud-accent focus:ring-wud-accent/50">
+                <span>🌲 Pin</span>
+              </label>
+              <label class="flex items-center space-x-2 text-wud-secondary hover:text-wud-accent cursor-pointer">
+                <input type="checkbox" name="wood" value="hetre" class="form-checkbox rounded text-wud-accent focus:ring-wud-accent/50">
+                <span>🍂 Hêtre</span>
+              </label>
+              <label class="flex items-center space-x-2 text-wud-secondary hover:text-wud-accent cursor-pointer">
+                <input type="checkbox" name="wood" value="frene" class="form-checkbox rounded text-wud-accent focus:ring-wud-accent/50">
+                <span>🌿 Frêne</span>
+              </label>
+              <label class="flex items-center space-x-2 text-wud-secondary hover:text-wud-accent cursor-pointer">
+                <input type="checkbox" name="wood" value="erable" class="form-checkbox rounded text-wud-accent focus:ring-wud-accent/50">
+                <span>🍁 Érable</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Filtre par Prix -->
+          <div class="bg-white p-4 rounded-lg shadow-sm">
+            <h3 class="text-xl font-semibold text-wud-primary mb-3">Prix</h3>
+            <div class="space-y-3">
+              <div>
+                <label for="price-range" class="block text-sm text-gray-600 mb-2">Prix maximum</label>
+                <input type="range" id="price-range" min="0" max="5000" value="5000" step="50" 
+                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider">
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>0€</span>
+                  <span id="price-range-value" class="font-medium text-wud-primary">5000€</span>
+                  <span>5000€</span>
+                </div>
+              </div>
+              
+              <!-- Filtres prix prédéfinis -->
+              <div class="space-y-2 pt-2 border-t">
+                <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                  <input type="radio" name="price-preset" value="0-500" class="text-wud-accent focus:ring-wud-accent price-preset-filter">
+                  <span>💰 Moins de 500€</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                  <input type="radio" name="price-preset" value="500-1000" class="text-wud-accent focus:ring-wud-accent price-preset-filter">
+                  <span>💰 500€ - 1000€</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                  <input type="radio" name="price-preset" value="1000-2000" class="text-wud-accent focus:ring-wud-accent price-preset-filter">
+                  <span>💰 1000€ - 2000€</span>
+                </label>
+                <label class="flex items-center space-x-2 text-sm cursor-pointer">
+                  <input type="radio" name="price-preset" value="2000-99999" class="text-wud-accent focus:ring-wud-accent price-preset-filter">
+                  <span>💰 Plus de 2000€</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Boutons d'action -->
+          <div class="space-y-2">
+            <button id="apply-filters-btn" class="w-full bg-wud-primary hover:bg-wud-dark text-white font-semibold py-3 px-4 rounded-lg transition-colors">
+              🔍 Appliquer les Filtres
+            </button>
+            <button id="reset-filters-btn" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors">
+              🔄 Réinitialiser
+            </button>
+          </div>
+
+        </aside>
+
+        <!-- Section Grille Produits -->
+        <section class="md:w-3/4 lg:w-4/5">
+          <!-- Messages d'état -->
+          <div id="catalog-messages" class="mb-4"></div>
+          
+          <div class="flex justify-between items-center mb-6">
+            <p class="text-sm text-wud-secondary"><span id="product-count-display">...</span> produits trouvés</p>
+            <div>
+              <label for="sort-by" class="sr-only">Trier par:</label>
+              <select id="sort-by" name="sort-by" class="text-sm border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+                <option value="default">Tri par défaut</option>
+                <option value="price-asc">Prix: Croissant</option>
+                <option value="price-desc">Prix: Décroissant</option>
+                <option value="name-asc">Nom: A-Z</option>
+                <option value="latest">Nouveautés</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="catalog-products-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Products will be loaded dynamically here -->
+            <div class="col-span-full text-center py-10">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-wud-primary"></div>
+              <p class="mt-2 text-wud-secondary">Chargement des produits...</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <nav aria-label="Pagination" class="mt-10 flex justify-center">
+            <ul class="inline-flex items-center -space-x-px">
+              <!-- Pagination will be generated dynamically -->
+            </ul>
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script> <!-- Adapter le chemin -->
+  <script>
+    // Petit script pour la démo du range slider de prix
+    document.addEventListener('DOMContentLoaded', () => {
+      const priceRange = document.getElementById('price-range');
+      const priceRangeValue = document.getElementById('price-range-value');
+      if(priceRange && priceRangeValue) {
+        priceRange.addEventListener('input', (e) => {
+          priceRangeValue.textContent = e.target.value + ' €';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

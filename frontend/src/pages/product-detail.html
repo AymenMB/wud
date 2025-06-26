@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Détail Produit - Wud'</title> <!-- Sera dynamisé -->
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body id="product-detail-page" class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <!-- Breadcrumbs -->
+      <nav class="text-sm mb-6" aria-label="Breadcrumb">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li><a href="/" class="text-wud-secondary hover:text-wud-accent">Accueil</a></li>
+          <li><span class="text-wud-gray">/</span></li>
+          <li><a href="/src/pages/catalog.html" class="text-wud-secondary hover:text-wud-accent">Catalogue</a></li>
+          <li><span class="text-wud-gray">/</span></li>
+          <!-- La catégorie du produit sera insérée ici dynamiquement -->
+          <li><a href="/src/pages/catalog.html?category=tables" class="text-wud-secondary hover:text-wud-accent" id="breadcrumb-category">Tables</a></li>
+          <li><span class="text-wud-gray">/</span></li>
+          <li class="text-wud-primary" id="breadcrumb-product-name">Nom du Produit Placeholder</li>
+        </ol>
+      </nav>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        <!-- Galerie d'images -->
+        <div id="product-gallery" class="space-y-4">
+          <div class="aspect-square bg-gray-200 rounded-lg overflow-hidden shadow">
+            <img id="main-product-image" src="https://via.placeholder.com/600x600.png/A07C5B/FFFFFF?text=Image+Principale" alt="Image principale du produit" class="w-full h-full object-cover">
+          </div>
+          <div id="thumbnail-images" class="grid grid-cols-4 gap-2">
+            <!-- Thumbnails (placeholders) -->
+            <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 border-transparent hover:border-wud-accent focus:border-wud-accent outline-none">
+              <img src="https://via.placeholder.com/150x150.png/A07C5B/FFFFFF?text=Thumb+1" alt="Thumbnail 1" class="w-full h-full object-cover">
+            </button>
+            <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 border-transparent hover:border-wud-accent focus:border-wud-accent outline-none">
+              <img src="https://via.placeholder.com/150x150.png/A07C5B/FFFFFF?text=Thumb+2" alt="Thumbnail 2" class="w-full h-full object-cover">
+            </button>
+            <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 border-transparent hover:border-wud-accent focus:border-wud-accent outline-none">
+              <img src="https://via.placeholder.com/150x150.png/A07C5B/FFFFFF?text=Thumb+3" alt="Thumbnail 3" class="w-full h-full object-cover">
+            </button>
+            <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 border-transparent hover:border-wud-accent focus:border-wud-accent outline-none">
+              <img src="https://via.placeholder.com/150x150.png/A07C5B/FFFFFF?text=Thumb+4" alt="Thumbnail 4" class="w-full h-full object-cover">
+            </button>
+          </div>
+        </div>
+
+        <!-- Informations Produit -->
+        <div id="product-info" class="py-4">
+          <h1 id="product-name" class="text-3xl lg:text-4xl font-serif font-bold text-wud-primary mb-2">Nom du Produit Placeholder</h1>
+          <p class="text-sm text-wud-secondary mb-4">SKU: <span id="product-sku">WUD-SKU-001</span></p>
+
+          <div class="mb-6">
+            <span id="product-price" class="text-3xl font-bold text-wud-primary">1200.00 €</span>
+            <span id="product-original-price" class="ml-2 text-lg text-wud-gray line-through hidden">1500.00 €</span>
+            <span id="product-discount-badge" class="ml-3 bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded hidden">PROMO</span>
+          </div>
+
+          <p id="product-short-description" class="text-gray-700 leading-relaxed mb-6">
+            Ceci est une brève description du produit. Elle met en avant les caractéristiques principales et l'attrait de cette pièce unique en bois massif.
+          </p>
+
+          <!-- Variantes (exemple: Essence de bois) -->
+          <div id="product-variants-container" class="space-y-4 mb-6">
+            <div class="variant-group">
+              <label for="variant-wood" class="block text-sm font-medium text-wud-primary mb-1">Essence de Bois:</label>
+              <select id="variant-wood" name="variant-wood" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary text-sm">
+                <option value="chene">Chêne</option>
+                <option value="noyer">Noyer (+50.00 €)</option>
+                <option value="frene">Frêne</option>
+              </select>
+            </div>
+            <!-- D'autres groupes de variantes pourraient être ajoutés ici -->
+          </div>
+
+          <!-- Quantité et Actions -->
+          <div class="flex items-center space-x-4 mb-6">
+            <label for="quantity" class="text-sm font-medium text-wud-primary">Quantité:</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" max="10"
+                   class="w-20 p-2 border-gray-300 rounded-md shadow-sm text-center focus:border-wud-primary focus:ring-wud-primary text-sm">
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 mb-6">
+            <button id="add-to-cart-detail-btn" class="flex-1 bg-wud-primary hover:bg-wud-dark text-white font-semibold py-3 px-6 rounded-md transition-colors text-center">
+              Ajouter au Panier
+            </button>
+            <button id="add-to-wishlist-detail-btn" aria-label="Ajouter à la wishlist"
+                    class="flex items-center justify-center sm:flex-none p-3 text-wud-primary border border-wud-primary rounded-md hover:bg-wud-primary hover:text-white transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+            </button>
+          </div>
+
+          <!-- Accordéon pour Description Détaillée, Dimensions, Entretien -->
+          <div id="product-details-accordion" class="space-y-2">
+            <div>
+              <button class="accordion-toggle flex justify-between items-center w-full py-3 text-left text-wud-primary font-semibold border-b border-gray-200 hover:text-wud-accent">
+                <span>Description Détaillée</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <div class="accordion-content hidden pt-2 pb-4 text-sm text-gray-600 leading-relaxed">
+                <p id="product-long-description">Description longue et détaillée du produit, mettant en lumière le savoir-faire artisanal, la qualité des matériaux, et les inspirations derrière sa création. Chaque pièce est unique...</p>
+              </div>
+            </div>
+            <div>
+              <button class="accordion-toggle flex justify-between items-center w-full py-3 text-left text-wud-primary font-semibold border-b border-gray-200 hover:text-wud-accent">
+                <span>Dimensions & Poids</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <div class="accordion-content hidden pt-2 pb-4 text-sm text-gray-600">
+                <ul id="product-dimensions" class="list-disc list-inside space-y-1">
+                  <li>Longueur: 120 cm</li>
+                  <li>Largeur: 60 cm</li>
+                  <li>Hauteur: 75 cm</li>
+                  <li>Poids: 25 kg</li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <button class="accordion-toggle flex justify-between items-center w-full py-3 text-left text-wud-primary font-semibold border-b border-gray-200 hover:text-wud-accent">
+                <span>Entretien</span>
+                <svg class="w-5 h-5 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <div class="accordion-content hidden pt-2 pb-4 text-sm text-gray-600">
+                <p id="product-care-instructions">Nettoyer avec un chiffon doux et légèrement humide. Éviter les produits abrasifs. Huiler régulièrement pour nourrir le bois (si finition huilée).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Produits Similaires/Recommandés -->
+      <section id="related-products" class="mt-16 pt-10 border-t border-gray-200">
+        <h2 class="text-2xl font-serif font-semibold text-center text-wud-primary mb-8">Vous pourriez également aimer</h2>
+        <div id="related-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Contenu chargé par JS. Message si vide. -->
+          <p id="related-products-placeholder" class="col-span-full text-center text-wud-secondary">Chargement des recommandations...</p>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+  <script>
+    // Script pour l'accordéon
+    document.addEventListener('DOMContentLoaded', () => {
+      // Assurez-vous que le DOM principal est chargé avant d'attacher les écouteurs
+      // pour les éléments qui pourraient être chargés dynamiquement (header/footer).
+      // Cependant, l'accordéon est dans cette page, donc on peut l'initialiser ici directement
+      // si `main.js` ne le fait pas déjà de manière globale.
+      // Pour éviter les doublons, on peut mettre cette logique dans une fonction appelée par main.js
+      // ou s'assurer que les IDs sont uniques si main.js est générique.
+
+      const initializeProductPageAccordion = () => {
+        const accordionToggles = document.querySelectorAll('#product-details-accordion .accordion-toggle');
+        accordionToggles.forEach(toggle => {
+          toggle.addEventListener('click', () => {
+            const content = toggle.nextElementSibling;
+            const icon = toggle.querySelector('svg');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+          });
+        });
+      };
+
+      // Si le header et footer sont chargés par main.js, il faut s'assurer que cette fonction
+      // est appelée APRES que le DOM de cette page spécifique soit stable.
+      // Pour l'instant, on suppose que main.js est déjà chargé et a fait son travail sur header/footer.
+      initializeProductPageAccordion();
+
+
+      // Logique pour la galerie d'images (très basique)
+      const mainImage = document.getElementById('main-product-image');
+      const thumbnails = document.querySelectorAll('#thumbnail-images button img');
+      if (mainImage && thumbnails.length > 0) {
+        thumbnails.forEach(thumb => {
+          thumb.addEventListener('click', (e) => {
+            mainImage.src = e.target.src.replace('150x150', '600x600'); // Adapter la taille si besoin
+            mainImage.alt = e.target.alt.replace('Thumbnail', 'Image principale');
+            // Gérer la bordure active sur le thumbnail
+            document.querySelectorAll('#thumbnail-images button').forEach(btn => btn.classList.remove('border-wud-accent'));
+            e.target.closest('button').classList.add('border-wud-accent');
+          });
+          // Activer la première thumbnail par défaut
+          if (thumb.alt.includes("Thumb 1")) {
+             e.target.closest('button').classList.add('border-wud-accent');
+          }
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>

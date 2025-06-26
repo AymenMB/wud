@@ -1,0 +1,31 @@
+[
+  {
+    "_id": { "$oid": "60c72b2f9b1e8a3f9c8b4567" },
+    "firstName": "Admin",
+    "lastName": "Wud",
+    "email": "admin@wud.com",
+    "password": "$2a$10$ExampleHashedPassword123...",
+    "role": "admin",
+    "createdAt": { "$date": "2023-01-01T10:00:00Z" },
+    "updatedAt": { "$date": "2023-01-01T10:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "60c72b2f9b1e8a3f9c8b4568" },
+    "firstName": "Alice",
+    "lastName": "Client",
+    "email": "alice@example.com",
+    "password": "$2a$10$ExampleHashedPassword456...",
+    "role": "client",
+    "addresses": [
+      {
+        "street": "123 Rue du Chêne",
+        "city": "Boisville",
+        "zipCode": "75000",
+        "country": "France",
+        "isDefault": true
+      }
+    ],
+    "createdAt": { "$date": "2023-01-02T11:00:00Z" },
+    "updatedAt": { "$date": "2023-01-02T11:00:00Z" }
+  }
+]

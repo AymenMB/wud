@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Titre de l'Article - Blog Wud'</title> <!-- Sera dynamisé -->
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body id="blog-post-page" class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <article class="max-w-3xl mx-auto">
+        <!-- Breadcrumbs -->
+        <nav class="text-sm mb-6" aria-label="Breadcrumb">
+          <ol class="list-none p-0 inline-flex space-x-2">
+            <li><a href="/" class="text-wud-secondary hover:text-wud-accent">Accueil</a></li>
+            <li><span class="text-wud-gray">/</span></li>
+            <li><a href="/src/pages/blog.html" class="text-wud-secondary hover:text-wud-accent">Blog</a></li>
+            <li><span class="text-wud-gray">/</span></li>
+            <li class="text-wud-primary" id="breadcrumb-post-title">Titre de l'Article Placeholder</li>
+          </ol>
+        </nav>
+
+        <!-- Titre et Méta -->
+        <header class="mb-8">
+          <h1 id="post-title" class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-wud-primary mb-3">Titre de l'Article Placeholder</h1>
+          <div class="text-sm text-wud-secondary">
+            <span>Par <a href="#" id="post-author" class="hover:underline">Auteur Placeholder</a></span> |
+            <time id="post-date" datetime="2024-07-15">15 Juillet 2024</time> |
+            <span>Catégorie: <a href="#" id="post-category" class="hover:underline">Inspiration</a></span>
+          </div>
+          <div id="post-tags" class="mt-2 text-xs">
+            Tags: <a href="#" class="bg-wud-gray-light text-wud-secondary px-2 py-0.5 rounded hover:bg-wud-accent hover:text-white">Bois</a>
+            <a href="#" class="bg-wud-gray-light text-wud-secondary px-2 py-0.5 rounded hover:bg-wud-accent hover:text-white">Design</a>
+          </div>
+        </header>
+
+        <!-- Image en Vedette -->
+        <figure id="post-featured-image-container" class="mb-8 rounded-lg overflow-hidden shadow-lg">
+          <img id="post-featured-image" src="https://via.placeholder.com/800x450.png/D4A373/2C231E?text=Image+Article" alt="Image de l'article" class="w-full h-auto object-cover">
+        </figure>
+
+        <!-- Contenu de l'Article -->
+        <div id="post-content" class="prose lg:prose-xl prose-headings:font-serif prose-headings:text-wud-primary prose-p:text-gray-700 prose-a:text-wud-accent hover:prose-a:text-wud-primary">
+          <p>Ceci est le début du contenu de l'article. Il sera remplacé par le contenu réel chargé depuis le backend. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          <h2>Un Sous-titre Important</h2>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          <ul>
+            <li>Point important 1</li>
+            <li>Point important 2</li>
+            <li>Point important 3</li>
+          </ul>
+          <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+          <blockquote>
+            "Une citation inspirante sur le bois ou l'artisanat." - Un Artisan Sage
+          </blockquote>
+          <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+        </div>
+
+        <!-- Section Partage (Optionnel) -->
+        <div class="mt-10 pt-6 border-t border-gray-200">
+          <p class="text-center text-wud-secondary">Partagez cet article :</p>
+          <div class="flex justify-center space-x-4 mt-2">
+            <!-- Icônes de partage -->
+            <a href="#" aria-label="Partager sur Facebook" class="text-wud-primary hover:text-wud-accent"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.142v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
+            <a href="#" aria-label="Partager sur Twitter" class="text-wud-primary hover:text-wud-accent"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
+            <a href="#" aria-label="Partager sur Pinterest" class="text-wud-primary hover:text-wud-accent"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10s4.486-10 10-10 10 4.486 10 10-4.486 10-10 10zm5.14-10.934c-.267-.029-1.139-.544-1.139-.544s-.103-.2-.127-.313c0-.68.43-1.43.43-2.258 0-1.805-1.054-3.29-2.973-3.29-2.28 0-3.747 1.687-3.747 3.618 0 .877.363 1.804.864 2.327.086.091.098.168.072.271-.082.32-.272.974-.348 1.249-.092.326-.018.43.202.615.43.357 1.064.175 1.507-.246.086-.08.162-.21.228-.348.082-.168.148-.324.148-.324s.43-1.768.555-2.195c.224-.764.928-1.465 1.768-1.465.827 0 1.456.607 1.456 1.513 0 .91-.363 2.136-1.004 3.22-.561.928-.03 1.97.618 2.482.805.645 2.187.137 2.782-1.164.278-.607.404-1.31.404-2.107 0-1.32-.476-2.345-1.358-2.994z"/></svg></a>
+            <a href="#" aria-label="Partager par Email" class="text-wud-primary hover:text-wud-accent"><svg class="h-7 w-7" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22 4H2C.9 4 0 4.9 0 6v12c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H2V8l10 7 10-7v10zM12 13L2 6h20l-10 7z"/></svg></a>
+          </div>
+        </div>
+
+        <!-- Section Commentaires (Placeholder) -->
+        <section id="comments-section" class="mt-12 pt-8 border-t border-gray-200">
+          <h2 class="text-2xl font-serif font-semibold text-wud-primary mb-6">Commentaires</h2>
+          <div class="bg-white p-6 rounded-lg shadow">
+            <p class="text-gray-600">La section des commentaires sera bientôt disponible.</p>
+            <!-- Formulaire de commentaire et liste des commentaires ici -->
+          </div>
+        </section>
+
+      </article>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

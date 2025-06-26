@@ -1,0 +1,160 @@
+<header class="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-wud-light">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <a href="/index.html" class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-wud-primary rounded-lg flex items-center justify-center">
+            <span class="text-white font-bold text-xl">W</span>
+          </div>
+          <span class="text-2xl font-bold text-wud-dark">Wud'</span>
+        </a>
+      </div>
+
+      <!-- Navigation principale - Desktop -->
+      <nav class="hidden md:flex space-x-8 items-center">
+        <a href="/index.html" class="text-wud-secondary hover:text-wud-primary font-medium transition-colors relative group">
+          Accueil
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-wud-primary transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/src/pages/catalog.html" class="text-wud-secondary hover:text-wud-primary font-medium transition-colors relative group">
+          Catalogue
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-wud-primary transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/src/pages/custom-project.html" class="text-wud-secondary hover:text-wud-primary font-medium transition-colors relative group">
+          Sur Mesure
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-wud-primary transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/src/pages/workshop.html" class="text-wud-secondary hover:text-wud-primary font-medium transition-colors relative group">
+          Atelier
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-wud-primary transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/src/pages/blog.html" class="text-wud-secondary hover:text-wud-primary font-medium transition-colors relative group">
+          Blog
+          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-wud-primary transition-all group-hover:w-full"></span>
+        </a>
+      </nav>
+
+      <!-- Icônes & Actions - Desktop -->
+      <div class="hidden md:flex items-center space-x-6">
+        <!-- Search Button -->
+        <button id="search-icon" aria-label="Rechercher" class="p-2 text-wud-secondary hover:text-wud-primary hover:bg-wud-light rounded-full transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+        
+        <!-- User Account -->
+        <a href="/src/pages/login.html" id="user-account-link" aria-label="Mon compte" class="p-2 text-wud-secondary hover:text-wud-primary hover:bg-wud-light rounded-full transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </a>
+        
+        <!-- Wishlist -->
+        <a href="/src/pages/wishlist.html" aria-label="Liste de souhaits" class="relative p-2 text-wud-secondary hover:text-wud-primary hover:bg-wud-light rounded-full transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span id="wishlist-count-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+        </a>
+        
+        <!-- Cart -->
+        <button id="cart-icon" aria-label="Panier" class="relative p-2 text-wud-secondary hover:text-wud-primary hover:bg-wud-light rounded-full transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cart-count-badge" class="absolute -top-1 -right-1 bg-wud-accent text-wud-dark text-xs rounded-full h-5 w-5 flex items-center justify-center hidden font-bold">0</span>
+        </button>
+        
+        <!-- CTA Button -->
+        <a href="/src/pages/custom-project.html" 
+           class="bg-wud-primary text-white px-6 py-2 rounded-full font-medium hover:bg-wud-dark transition-all hover:shadow-lg">
+          Devis gratuit
+        </a>
+      </div>
+
+      <!-- Bouton Menu Burger - Mobile -->
+      <div class="md:hidden flex items-center">
+        <button id="mobile-menu-button" class="text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800" aria-label="Menu principal">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Mobile (caché par défaut) -->
+  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+    <a href="/index.html" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">Accueil</a>
+    <a href="/src/pages/catalog.html" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">Catalogue</a>
+    <a href="/src/pages/custom-project.html" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">Sur Mesure</a>
+    <a href="/src/pages/workshop.html" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">Notre Atelier</a>
+    <a href="/src/pages/blog.html" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">Blog</a>
+    <hr class="my-1">
+    <a href="/src/pages/login.html" id="mobile-user-account-link" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">Mon Compte</a>
+    <a href="/src/pages/wishlist.html" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">
+      Liste de souhaits <span id="mobile-wishlist-count-badge" class="ml-1 bg-wud-accent text-white text-xs rounded-full h-4 w-4 inline-flex items-center justify-center hidden">0</span>
+    </a>
+     <button id="mobile-cart-icon" class="w-full text-left block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary">
+      Panier <span id="mobile-cart-count-badge" class="ml-1 bg-wud-accent text-white text-xs rounded-full h-4 w-4 inline-flex items-center justify-center hidden">0</span>
+    </button>
+    <div class="py-2 px-4">
+        <button id="mobile-search-icon" aria-label="Rechercher" class="w-full flex items-center text-sm text-gray-700 hover:bg-gray-100 hover:text-wud-primary p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          Rechercher
+        </button>
+    </div>
+  </div>
+</header>
+
+<!-- Modale de recherche (cachée par défaut) -->
+<div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 hidden z-[60]">
+  <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-semibold text-gray-800">Rechercher un produit</h3>
+      <button id="close-search-modal" class="text-gray-500 hover:text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <input type="text" id="search-input" placeholder="Nom du produit, essence de bois..." class="w-full p-2 border border-gray-300 rounded-md focus:ring-wud-primary focus:border-wud-primary">
+    <div id="search-results" class="mt-4 max-h-60 overflow-y-auto">
+      <!-- Les résultats de recherche apparaîtront ici -->
+    </div>
+  </div>
+</div>
+
+<!-- Modale/Off-canvas Panier (caché par défaut) -->
+<div id="cart-modal" class="fixed inset-0 hidden z-[70]">
+    <div id="cart-overlay" class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+    <div id="cart-panel" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col h-full">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h3 class="text-xl font-semibold text-gray-800">Votre Panier</h3>
+                <button id="close-cart-modal" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div id="cart-items-container" class="flex-grow p-4 overflow-y-auto">
+                <!-- Les articles du panier apparaîtront ici -->
+                <p class="text-gray-500 text-center">Votre panier est vide.</p>
+            </div>
+            <div class="p-4 border-t">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">Sous-total:</span>
+                    <span id="cart-subtotal" class="text-lg font-semibold text-gray-800">0.00 €</span>
+                </div>
+                <a href="/src/pages/checkout.html" id="checkout-button" class="block w-full text-center bg-wud-primary hover:bg-wud-dark text-white font-semibold py-3 px-4 rounded-md transition-colors disabled:opacity-50">
+                    Passer la commande
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

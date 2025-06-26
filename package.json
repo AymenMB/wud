@@ -1,0 +1,38 @@
+{
+  "name": "wud-backend",
+  "version": "1.0.0",
+  "description": "Backend for Wud e-commerce application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AymenMB/E-commerce-.git"
+  },
+  "keywords": [
+    "ecommerce",
+    "express",
+    "mongodb",
+    "nodejs",
+    "wud"
+  ],
+  "author": "Wud Team (AI Assisted)",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AymenMB/E-commerce-/issues"
+  },
+  "homepage": "https://github.com/AymenMB/E-commerce-#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.0",
+    "nodemon": "^3.1.0"
+  }
+}

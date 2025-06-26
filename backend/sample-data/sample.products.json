@@ -1,0 +1,72 @@
+[
+  {
+    "_id": { "$oid": "60c72b4f9b1e8a3f9c8b4580" },
+    "name": "Table de Repas 'Chêne Royal'",
+    "description": "Table de repas majestueuse en chêne massif français, finition huilée naturelle. Idéale pour accueillir 6 à 8 convives.",
+    "longDescription": "La table 'Chêne Royal' est une pièce maîtresse qui apportera chaleur et convivialité à votre salle à manger. Fabriquée à partir de chêne français issu de forêts gérées durablement, elle se distingue par la robustesse de son plateau et l'élégance de son piétement. Sa finition huilée met en valeur le veinage naturel du bois et le protège au quotidien. Chaque table est unique, portant la marque du travail artisanal.",
+    "price": 1250,
+    "price_before_discount": 1400,
+    "sku": "WUD-TBL-CHR-001",
+    "categories": [{ "$oid": "60c72b3a9b1e8a3f9c8b4570" }],
+    "images": [
+      { "url": "https://via.placeholder.com/800x600.png/A07C5B/FFFFFF?text=Chêne+Royal+Angle", "altText": "Table Chêne Royal vue d'angle" },
+      { "url": "https://via.placeholder.com/800x600.png/A07C5B/FFFFFF?text=Chêne+Royal+Dessus", "altText": "Table Chêne Royal vue de dessus" },
+      { "url": "https://via.placeholder.com/800x600.png/A07C5B/FFFFFF?text=Chêne+Royal+Détail", "altText": "Détail du bois de la Table Chêne Royal" }
+    ],
+    "stock": 10,
+    "isFeatured": true,
+    "isPublished": true,
+    "woodEssence": "Chêne",
+    "usage": ["Salle à manger", "Intérieur"],
+    "dimensions": { "length": 180, "width": 90, "height": 75, "weight": 45 },
+    "careInstructions": "Nettoyer avec un chiffon doux et humide. Appliquer une huile d'entretien pour bois tous les 6 à 12 mois.",
+    "promotion": {
+        "promoText": "Offre Spéciale",
+        "discountPercentage": 10.71,
+        "startDate": { "$date": "2023-01-01T00:00:00Z" },
+        "endDate": { "$date": "2024-12-31T23:59:59Z" }
+    },
+    "createdAt": { "$date": "2023-02-01T00:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "60c72b4f9b1e8a3f9c8b4581" },
+    "name": "Banc 'Noyer Élégance'",
+    "description": "Banc en noyer massif aux lignes épurées, parfait pour une entrée ou en complément d'une table.",
+    "longDescription": "Le banc 'Noyer Élégance' combine la richesse du noyer américain avec un design minimaliste et fonctionnel. Sa surface lisse et sa construction solide en font une pièce polyvalente, aussi à l'aise dans une entrée, au pied d'un lit, ou comme assise d'appoint autour d'une table. La finition met en exergue la profondeur et la beauté naturelle des couleurs du noyer.",
+    "price": 480,
+    "sku": "WUD-BNC-NOY-001",
+    "categories": [{ "$oid": "60c72b3a9b1e8a3f9c8b4571" }],
+    "images": [{ "url": "https://via.placeholder.com/600x400.png/4A3B31/FFFFFF?text=Banc+Noyer", "altText": "Banc Noyer Élégance" }],
+    "stock": 15,
+    "isFeatured": true,
+    "isPublished": true,
+    "woodEssence": "Noyer",
+    "usage": ["Entrée", "Chambre", "Salle à manger"],
+    "dimensions": { "length": 120, "width": 35, "height": 45, "weight": 15 },
+    "createdAt": { "$date": "2023-02-15T00:00:00Z" }
+  },
+  {
+    "_id": { "$oid": "60c72b4f9b1e8a3f9c8b4582" },
+    "name": "Bibliothèque Modulaire 'Frêne Zen'",
+    "description": "Système de bibliothèque modulaire en frêne clair, adaptable à vos besoins et à votre espace.",
+    "longDescription": "La bibliothèque 'Frêne Zen' offre une solution de rangement flexible et esthétique. Ses modules peuvent être combinés pour créer une configuration personnalisée. Réalisée en frêne massif, elle apporte une touche de clarté et de sérénité scandinave à votre intérieur. Idéale pour les livres, objets décoratifs ou plantes.",
+    "price": 950,
+    "sku": "WUD-BIB-FRN-001",
+    "categories": [{ "$oid": "60c72b3a9b1e8a3f9c8b4572" }],
+    "images": [{ "url": "https://via.placeholder.com/500x700.png/D4A373/2C231E?text=Bibliothèque+Frêne", "altText": "Bibliothèque Frêne Zen" }],
+    "stock": 5,
+    "isPublished": true,
+    "woodEssence": "Frêne",
+    "usage": ["Salon", "Bureau", "Chambre"],
+    "variants": [
+        {
+            "name": "Hauteur",
+            "options": [
+                { "value": "180cm", "additionalPrice": 0, "stock": 3 },
+                { "value": "220cm", "additionalPrice": 150, "stock": 2 }
+            ]
+        }
+    ],
+    "createdAt": { "$date": "2023-03-01T00:00:00Z" }
+  }
+]

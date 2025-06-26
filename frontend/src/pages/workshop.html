@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notre Atelier - Wud'</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow">
+      <!-- Section Hero pour la page Atelier -->
+      <section class="bg-wud-dark text-white py-20 md:py-32 relative">
+        <img src="https://via.placeholder.com/1920x600.png/2C231E/F0EFEB?text=L'Atelier+Wud'"
+             alt="Ambiance de l'atelier Wud'"
+             class="absolute inset-0 w-full h-full object-cover z-0 opacity-40">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h1 class="text-4xl md:text-6xl font-serif font-bold">Au Cœur de la Création</h1>
+          <p class="text-lg md:text-xl mt-4 max-w-2xl mx-auto">Découvrez l'âme de Wud' : notre atelier, nos artisans, notre passion pour le bois.</p>
+        </div>
+      </section>
+
+      <!-- Section Contenu Principal -->
+      <section class="py-12 md:py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <article class="max-w-3xl mx-auto prose lg:prose-xl prose-headings:font-serif prose-headings:text-wud-primary prose-p:text-gray-700 prose-a:text-wud-accent hover:prose-a:text-wud-primary">
+
+            <h2>Notre Philosophie : L'Artisanat Durable</h2>
+            <p>
+              Chez Wud', chaque meuble est le fruit d'un travail minutieux, où la main de l'artisan rencontre la noblesse du bois massif. Nous croyons en un design intemporel, des matériaux durables et une fabrication respectueuse de l'environnement. Notre objectif n'est pas seulement de créer des meubles, mais de concevoir des pièces de vie qui vous accompagneront pendant des générations.
+            </p>
+
+            <figure class="my-8">
+              <img src="https://via.placeholder.com/800x500.png/A07C5B/FFFFFF?text=Artisan+au+travail" alt="Artisan Wud' travaillant le bois" class="rounded-lg shadow-lg mx-auto">
+              <figcaption class="text-center text-sm text-gray-500 mt-2">Un de nos artisans passionnés à l'œuvre.</figcaption>
+            </figure>
+
+            <h2>Des Bois Sélectionnés avec Soin</h2>
+            <p>
+              Nous sélectionnons rigoureusement nos bois auprès de fournisseurs locaux et responsables, privilégiant les essences issues de forêts gérées durablement. Chêne, noyer, frêne, érable... chaque essence apporte son caractère unique, sa texture et sa chaleur à nos créations. Nous travaillons le bois dans le respect de sa nature, en valorisant ses veines et ses particularités.
+            </p>
+
+            <h2>Un Savoir-Faire Traditionnel, une Vision Moderne</h2>
+            <p>
+              Nos techniques de fabrication s'inspirent des méthodes traditionnelles d'ébénisterie, tout en intégrant une esthétique contemporaine. Assemblages précis, finitions soignées à la main (huiles naturelles, vernis écologiques), souci du détail... chaque étape est cruciale pour garantir la qualité et la longévité de nos meubles.
+            </p>
+            <p>
+              L'atelier Wud' est plus qu'un lieu de production ; c'est un espace de créativité, d'échange et de transmission de savoir-faire. Nous sommes fiers de perpétuer l'art de l'ébénisterie artisanale tout en répondant aux attentes et aux modes de vie actuels.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-10">
+              <img src="https://via.placeholder.com/400x300.png/4A3B31/FFFFFF?text=Détail+finition" alt="Détail d'une finition sur un meuble Wud'" class="rounded-lg shadow-md">
+              <img src="https://via.placeholder.com/400x300.png/D4A373/2C231E?text=Outils+d'artisan" alt="Outils traditionnels d'ébéniste" class="rounded-lg shadow-md">
+            </div>
+
+            <h2>Visitez Notre Espace (Sur Rendez-vous)</h2>
+            <p>
+              Bien que notre atelier soit avant tout un lieu de travail, nous sommes heureux d'accueillir les passionnés et les clients souhaitant discuter d'un projet sur mesure. Contactez-nous pour prendre rendez-vous et découvrir de plus près notre univers.
+            </p>
+            <div class="mt-8 text-center">
+                <a href="/src/pages/custom-project.html" class="bg-wud-accent hover:bg-opacity-80 text-wud-dark font-semibold py-3 px-6 rounded-md text-lg transition-colors">
+                    Discutons de votre projet
+                </a>
+            </div>
+
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

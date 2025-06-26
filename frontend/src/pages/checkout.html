@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finalisation de la Commande - Wud'</title>
+  <link rel="stylesheet" href="/src/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body id="checkout-page" class="bg-gray-50 text-gray-900 font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <!-- En-tête de la page -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold text-wud-primary mb-4">Finalisation de la Commande</h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Complétez vos informations pour finaliser votre achat en toute sécurité</p>
+      </div>
+
+      <div id="checkout-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Section Formulaires (Adresse, Paiement) -->
+        <section class="lg:col-span-2 space-y-8">
+          <form id="checkout-form" class="space-y-8">
+            <!-- Coordonnées -->
+            <div class="checkout-form-section animate-fade-in">
+              <h2>👤 Vos Coordonnées</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label for="checkout-firstName" class="form-label">Prénom <span class="text-red-500">*</span></label>
+                  <input type="text" id="checkout-firstName" name="firstName" autocomplete="given-name" required class="checkout-input">
+                </div>
+                <div>
+                  <label for="checkout-lastName" class="form-label">Nom <span class="text-red-500">*</span></label>
+                  <input type="text" id="checkout-lastName" name="lastName" autocomplete="family-name" required class="checkout-input">
+                </div>
+              </div>
+              <div class="mt-6">
+                <label for="checkout-email" class="form-label">Email <span class="text-red-500">*</span></label>
+                <input type="email" id="checkout-email" name="email" autocomplete="email" required class="checkout-input">
+              </div>
+            </div>
+
+            <!-- Adresse de Livraison -->
+            <div class="checkout-form-section animate-fade-in">
+              <h2>🚚 Adresse de Livraison</h2>
+              <div class="space-y-6">
+                <div>
+                  <label for="shipping-street" class="form-label">Rue et numéro <span class="text-red-500">*</span></label>
+                  <input type="text" id="shipping-street" name="shippingAddress.street" autocomplete="shipping street-address" required class="checkout-input" placeholder="Ex: 123 rue de la Paix">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label for="shipping-zipCode" class="form-label">Code Postal <span class="text-red-500">*</span></label>
+                    <input type="text" id="shipping-zipCode" name="shippingAddress.zipCode" autocomplete="shipping postal-code" required class="checkout-input" placeholder="75001">
+                  </div>
+                  <div class="md:col-span-2">
+                    <label for="shipping-city" class="form-label">Ville <span class="text-red-500">*</span></label>
+                    <input type="text" id="shipping-city" name="shippingAddress.city" autocomplete="shipping address-level2" required class="checkout-input" placeholder="Paris">
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="shipping-country" class="form-label">Pays <span class="text-red-500">*</span></label>
+                    <input type="text" id="shipping-country" name="shippingAddress.country" autocomplete="shipping country-name" required value="France" class="checkout-input">
+                  </div>
+                  <div>
+                    <label for="shipping-phoneNumber" class="form-label">Téléphone (pour la livraison)</label>
+                    <input type="tel" id="shipping-phoneNumber" name="shippingAddress.phoneNumber" autocomplete="tel" class="checkout-input" placeholder="06 12 34 56 78">
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <label class="flex items-center">
+                  <input type="checkbox" id="use-shipping-for-billing" name="useShippingForBilling" checked class="h-4 w-4 text-wud-accent border-gray-300 rounded focus:ring-wud-primary">
+                  <span class="ml-3 text-sm text-gray-700">Utiliser cette adresse pour la facturation</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Adresse de Facturation (conditionnelle) -->
+            <div id="billing-address-section" class="checkout-form-section hidden animate-slide-up">
+              <h2>📄 Adresse de Facturation</h2>
+              <div class="space-y-6">
+                <div>
+                  <label for="billing-street" class="form-label">Rue et numéro <span class="text-red-500">*</span></label>
+                  <input type="text" id="billing-street" name="billingAddress.street" autocomplete="billing street-address" class="checkout-input">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label for="billing-zipCode" class="form-label">Code Postal <span class="text-red-500">*</span></label>
+                    <input type="text" id="billing-zipCode" name="billingAddress.zipCode" autocomplete="billing postal-code" class="checkout-input">
+                  </div>
+                  <div class="md:col-span-2">
+                    <label for="billing-city" class="form-label">Ville <span class="text-red-500">*</span></label>
+                    <input type="text" id="billing-city" name="billingAddress.city" autocomplete="billing address-level2" class="checkout-input">
+                  </div>
+                </div>
+                <div>
+                  <label for="billing-country" class="form-label">Pays <span class="text-red-500">*</span></label>
+                  <input type="text" id="billing-country" name="billingAddress.country" autocomplete="billing country-name" value="France" class="checkout-input">
+                </div>
+              </div>
+            </div>
+
+            <!-- Méthode de Livraison -->
+            <div class="checkout-form-section animate-fade-in">
+              <h2>📦 Méthode de Livraison</h2>
+              <div class="space-y-4">
+                <label class="shipping-option">
+                  <input type="radio" name="shippingMethod" value="standard" checked class="h-4 w-4 text-wud-accent border-gray-300 focus:ring-wud-primary">
+                  <div class="ml-4 flex-1">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <p class="font-medium text-gray-900">Livraison Standard</p>
+                        <p class="text-sm text-gray-500">5-7 jours ouvrés</p>
+                      </div>
+                      <span class="font-semibold text-wud-primary" id="shipping-cost-standard">5,00 €</span>
+                    </div>
+                  </div>
+                </label>
+                <label class="shipping-option">
+                  <input type="radio" name="shippingMethod" value="express" class="h-4 w-4 text-wud-accent border-gray-300 focus:ring-wud-primary">
+                  <div class="ml-4 flex-1">
+                    <div class="flex justify-between items-center">
+                      <div>
+                        <p class="font-medium text-gray-900">Livraison Express</p>
+                        <p class="text-sm text-gray-500">2-3 jours ouvrés</p>
+                      </div>
+                      <span class="font-semibold text-wud-primary">15,00 €</span>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Paiement -->
+            <div class="checkout-form-section animate-fade-in">
+              <h2>💳 Paiement</h2>
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p class="text-sm text-blue-800">
+                  <i class="fas fa-info-circle mr-2"></i>
+                  Pour cette version de démonstration, le paiement est simulé. Aucune transaction réelle n'est effectuée.
+                </p>
+              </div>
+              <div>
+                <label for="paymentMethod" class="form-label">Méthode de paiement</label>
+                <select id="paymentMethod" name="paymentMethod" class="checkout-input">
+                  <option value="credit_card">Carte de crédit</option>
+                  <option value="paypal">PayPal</option>
+                  <option value="bank_transfer">Virement bancaire</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Messages et bouton de soumission -->
+            <div class="checkout-form-section">
+              <div id="checkout-message" class="mb-6"></div>
+              <button type="submit" id="submit-order-btn" class="w-full btn-primary text-lg py-4 animate-fade-in">
+                <i class="fas fa-lock mr-2"></i>
+                Confirmer la Commande
+              </button>
+              <p class="text-xs text-gray-500 text-center mt-3">
+                En confirmant votre commande, vous acceptez nos conditions générales de vente.
+              </p>
+            </div>
+          </form>
+        </section>
+
+        <!-- Résumé de la commande -->
+        <aside class="lg:col-span-1">
+          <div class="order-summary animate-fade-in">
+            <div class="order-summary-header">
+              <h3 class="text-lg font-semibold text-gray-900">📋 Résumé de la Commande</h3>
+            </div>
+            <div class="order-summary-body">
+              <div id="checkout-cart-summary" class="space-y-3 mb-6">
+                <!-- Contenu généré par JavaScript -->
+              </div>
+              
+              <div class="border-t border-gray-200 pt-4 space-y-3">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Sous-total articles:</span>
+                  <span id="summary-items-subtotal" class="font-medium">0,00 €</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Livraison:</span>
+                  <span id="summary-shipping-cost" class="font-medium">5,00 €</span>
+                </div>
+                <div class="border-t border-gray-300 pt-3">
+                  <div class="flex justify-between items-center">
+                    <span class="text-lg font-semibold text-gray-900">Total:</span>
+                    <span id="summary-total-amount" class="text-xl font-bold text-wud-primary">0,00 €</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-6 p-4 bg-green-50 rounded-lg">
+                <div class="flex items-center">
+                  <i class="fas fa-shield-alt text-green-600 mr-2"></i>
+                  <span class="text-sm text-green-800">Paiement 100% sécurisé</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+  <!-- Le script checkoutPage.js sera appelé par main.js -->
+</body>
+</html>

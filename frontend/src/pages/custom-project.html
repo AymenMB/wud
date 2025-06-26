@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projet sur Mesure - Wud'</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body id="custom-project-page" class="bg-wud-light text-wud-dark font-sans antialiased">
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-10">
+          <h1 class="text-4xl font-serif font-bold text-wud-primary">Votre Projet de Mobilier sur Mesure</h1>
+          <p class="text-lg text-wud-secondary mt-3">Partagez-nous vos idées, nous leur donnerons vie avec passion et savoir-faire.</p>
+        </div>
+
+        <form id="custom-project-form" class="bg-white p-6 sm:p-8 rounded-lg shadow-xl space-y-6">
+          <div>
+            <h2 class="text-2xl font-semibold text-wud-primary mb-6 border-b pb-3">Vos Coordonnées</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Prénom <span class="text-red-500">*</span></label>
+                <input type="text" name="firstName" id="firstName" required class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Nom <span class="text-red-500">*</span></label>
+                <input type="text" name="lastName" id="lastName" required class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+              </div>
+            </div>
+            <div class="mt-4">
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+              <input type="email" name="email" id="email" required class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+            </div>
+            <div class="mt-4">
+              <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+              <input type="tel" name="phoneNumber" id="phoneNumber" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-2xl font-semibold text-wud-primary mt-8 mb-6 border-b pb-3">Description de Votre Projet</h2>
+            <div>
+              <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-1">Décrivez votre projet en détail <span class="text-red-500">*</span></label>
+              <textarea name="projectDescription" id="projectDescription" rows="6" required class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary"></textarea>
+              <p class="text-xs text-gray-500 mt-1">Type de meuble, style souhaité, fonctionnalités spécifiques, etc.</p>
+            </div>
+            <div class="mt-4">
+              <label for="dimensions" class="block text-sm font-medium text-gray-700 mb-1">Dimensions approximatives</label>
+              <input type="text" name="dimensions" id="dimensions" placeholder="Ex: L 120cm x P 60cm x H 75cm" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+            </div>
+            <div class="mt-4">
+              <label for="woodTypes" class="block text-sm font-medium text-gray-700 mb-1">Essences de bois préférées (optionnel)</label>
+              <input type="text" name="woodTypes" id="woodTypes" placeholder="Ex: Chêne, Noyer, Frêne" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+              <p class="text-xs text-gray-500 mt-1">Séparez par des virgules si plusieurs.</p>
+            </div>
+            <div class="mt-4">
+              <label for="budgetRange" class="block text-sm font-medium text-gray-700 mb-1">Budget approximatif (optionnel)</label>
+              <input type="text" name="budgetRange" id="budgetRange" placeholder="Ex: 1000€ - 2000€" class="w-full p-2 border-gray-300 rounded-md shadow-sm focus:border-wud-primary focus:ring-wud-primary">
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-2xl font-semibold text-wud-primary mt-8 mb-6 border-b pb-3">Images d'Inspiration (Optionnel)</h2>
+            <div>
+              <label for="inspirationImages" class="block text-sm font-medium text-gray-700 mb-1">Téléchargez jusqu'à 3 images</label>
+              <input type="file" name="inspirationImages" id="inspirationImages" multiple accept="image/png, image/jpeg, image/webp"
+                     class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                            file:rounded-md file:border-0 file:text-sm file:font-semibold
+                            file:bg-wud-accent file:text-wud-dark hover:file:bg-wud-accent/80
+                            focus:outline-none focus:ring-2 focus:ring-wud-primary focus:border-transparent">
+              <p class="text-xs text-gray-500 mt-1">Formats acceptés: PNG, JPG, WEBP. Taille max par fichier: 5MB.</p>
+              <div id="image-previews" class="mt-4 grid grid-cols-3 gap-4">
+                <!-- Les aperçus d'images apparaîtront ici -->
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 text-center">
+            <button type="submit"
+                    class="bg-wud-primary hover:bg-wud-dark text-white font-semibold py-3 px-10 rounded-md text-lg transition-colors shadow-md hover:shadow-lg">
+              Envoyer ma Demande
+            </button>
+            <div id="form-message" class="mt-4 text-sm"></div>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+  </div>
+  <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/js/customProjectPage.js"></script>
+</body>
+</html>
