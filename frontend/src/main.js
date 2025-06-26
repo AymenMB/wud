@@ -11,6 +11,7 @@ import { initCheckoutPage } from './js/checkoutPage.js';
 import { initOrdersPage } from './js/ordersPage.js';
 import { initBlogPage } from './js/blogPage.js'; // Ajouté
 import { initBlogPostPage } from './js/blogPostPage.js'; // Ajouté
+import { setupAdminUI } from './js/admin/uiAdmin.js'; // Import setupAdminUI
 
 async function loadComponent(componentPath, placeholderId, callback) {
   const placeholder = document.getElementById(placeholderId);
@@ -38,7 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadComponent('/src/components/header.html', 'header-placeholder', () => {
     initializeHeaderInteractions();
-    checkAuthState();
+    checkAuthState(); // This will eventually trigger 'authChange'
+    setupAdminUI(); // Call it once after header is loaded and auth state is initially checked
     initializeCart();
     initializeWishlist();
   });
@@ -236,6 +238,7 @@ document.addEventListener('authChange', (event) => {
     console.log('Auth state changed globally:', event.detail);
     if (typeof updateCartOnAuthChange === 'function') updateCartOnAuthChange(event.detail);
     if (typeof updateWishlistOnAuthChange === 'function') updateWishlistOnAuthChange(event.detail);
+    if (typeof setupAdminUI === 'function') setupAdminUI(); // Update admin UI on auth change
 });
 
 window.WudApp = {

@@ -35,7 +35,6 @@ router.put('/:id', protect, admin, updateProduct);
 
 // Pour supprimer un produit (route générique, garder pour compatibilité)
 router.delete('/:id', protect, admin, deleteProduct);
-router.get('/admin/:id', protect, admin, getProductByIdAdmin);
 
 
 module.exports = router;
