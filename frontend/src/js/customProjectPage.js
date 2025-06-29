@@ -2,6 +2,16 @@ import { customRequestAPI } from './api.js';
 // getToken n'est plus nécessaire ici car customRequestAPI.submit le gère via apiRequest
 import { displayMessage, setLoadingState, devLog, devWarn, appError } from './uiUtils.js';
 
+// Helper function to convert file to base64
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 function initCustomProjectPage() {
     const form = document.getElementById('custom-project-form');
     const messageDiv = document.getElementById('form-message');
@@ -16,10 +26,13 @@ function initCustomProjectPage() {
 
             if (event.target.files.length > 3) {
                 displayMessage(messageDiv, 'Vous ne pouvez télécharger que 3 images au maximum.', 'error');
-                imageInput.value = '';
+                // Create a new FileList with only the first 3 files
+                const dt = new DataTransfer();
+                files.forEach(file => dt.items.add(file));
+                imageInput.files = dt.files;
             }
 
-            files.forEach(file => {
+            files.forEach((file, index) => {
                 if (file.size > 5 * 1024 * 1024) {
                     displayMessage(messageDiv, `Le fichier ${file.name} est trop volumineux (max 5MB).`, 'error');
                     return;
@@ -31,11 +44,33 @@ function initCustomProjectPage() {
 
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = e.target.result;
-                    imgElement.alt = `Aperçu ${file.name}`;
-                    imgElement.className = 'h-24 w-full object-cover rounded-md border';
-                    previewsContainer.appendChild(imgElement);
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Aperçu ${file.name}" class="h-24 w-full object-cover rounded-md border">
+                        <button type="button" 
+                                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-xs hover:bg-red-600 remove-image-btn" 
+                                data-image-index="${index}">×</button>
+                        <p class="text-xs text-gray-500 mt-1 truncate">${file.name}</p>
+                    `;
+                    previewsContainer.appendChild(previewDiv);
+                    
+                    // Add remove functionality
+                    const removeBtn = previewDiv.querySelector('.remove-image-btn');
+                    removeBtn.addEventListener('click', function() {
+                        previewDiv.remove();
+                        // Remove the file from the input
+                        const dt = new DataTransfer();
+                        const currentFiles = Array.from(imageInput.files);
+                        currentFiles.forEach((f, i) => {
+                            if (i !== index) dt.items.add(f);
+                        });
+                        imageInput.files = dt.files;
+                        // Clear error message if any
+                        if (messageDiv && messageDiv.className.includes('text-red-600')) {
+                            displayMessage(messageDiv, '', 'info');
+                        }
+                    });
                 }
                 reader.readAsDataURL(file);
             });
@@ -48,6 +83,30 @@ function initCustomProjectPage() {
             displayMessage(messageDiv, '', 'info');
 
             const formData = new FormData(form);
+            
+            // Collect inspiration images
+            const imageFiles = imageInput ? imageInput.files : [];
+            const inspirationImages = [];
+            
+            // Convert images to base64 for now (simple solution)
+            if (imageFiles.length > 0) {
+                for (let i = 0; i < Math.min(imageFiles.length, 3); i++) {
+                    const file = imageFiles[i];
+                    try {
+                        const base64 = await fileToBase64(file);
+                        inspirationImages.push({
+                            url: base64,
+                            caption: `Image d'inspiration ${i + 1}`,
+                            fileName: file.name,
+                            fileType: file.type,
+                            fileSize: file.size
+                        });
+                    } catch (error) {
+                        console.warn(`Erreur lors de la conversion de l'image ${file.name}:`, error);
+                    }
+                }
+            }
+
             const requestData = {
                 firstName: formData.get('firstName'),
                 lastName: formData.get('lastName'),
@@ -57,10 +116,10 @@ function initCustomProjectPage() {
                 dimensions: formData.get('dimensions'),
                 woodTypes: formData.get('woodTypes') ? formData.get('woodTypes').split(',').map(s => s.trim()).filter(s => s) : [],
                 budgetRange: formData.get('budgetRange'),
-                // inspirationImages: [] // La gestion des fichiers sera plus complexe (upload séparé ou multipart)
-                                       // Pour l'instant, le backend ne les traite pas via JSON.
+                inspirationImages: inspirationImages
             };
 
+            // Clean up empty optional fields
             for (const key in requestData) {
                 if (!requestData[key] && !['firstName', 'lastName', 'email', 'projectDescription'].includes(key)) {
                     delete requestData[key];

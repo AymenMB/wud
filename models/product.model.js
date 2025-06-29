@@ -19,14 +19,12 @@ const productSchema = new mongoose.Schema({
             stock: { type: Number, min: 0 }
         }]
     }],
-    dimensions: {
-        length: Number, // en cm
-        width: Number,  // en cm
-        height: Number, // en cm
-        weight: Number  // en kg
-    },
-    woodEssence: { type: String, trim: true }, // Peut être une caractéristique principale ou une variante
+    dimensions: { type: String }, // Format libre pour les dimensions, ex: "120x80x75 cm"
+    materials: { type: String, trim: true }, // Matériaux utilisés, remplace woodEssence
+    woodEssence: { type: String, trim: true }, // Peut être une caractéristique principale ou une variante (pour compatibilité)
     usage: [String], // ex: "Intérieur", "Bureau", "Salon"
+    finish: { type: String, trim: true }, // Type de finition
+    weight: { type: Number, min: 0 }, // Poids en kg
     isFeatured: { type: Boolean, default: false }, // Pour les produits phares
     isPublished: { type: Boolean, default: true },
     tags: [String],
@@ -39,12 +37,13 @@ const productSchema = new mongoose.Schema({
         endDate: Date,
         promoText: String // ex: "10% OFF"
     },
+    price_before_discount: { type: Number, min: 0 }, // Store original price when promotion is active
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
 // Index pour la recherche textuelle
-productSchema.index({ name: 'text', description: 'text', tags: 'text', woodEssence: 'text' });
+productSchema.index({ name: 'text', description: 'text', tags: 'text', materials: 'text', woodEssence: 'text' });
 // Index pour le tri et les filtres
 productSchema.index({ price: 1 });
 productSchema.index({ categories: 1 });

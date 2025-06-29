@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const blogPostSchema = new mongoose.Schema({
     title: { type: String, required: true, trim: true, unique: true },
-    slug: { type: String, required: true, unique: true, trim: true, lowercase: true },
+    slug: { type: String, unique: true, trim: true, lowercase: true },
     content: { type: String, required: true }, // Peut contenir du HTML ou Markdown
     excerpt: { type: String, trim: true }, // Court résumé
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Admin/Rédacteur

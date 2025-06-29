@@ -17,6 +17,55 @@ async function handleResponse(response) {
     }
 
     if (!response.ok) {
+        // Check for 401 (Unauthorized) - likely token expired
+        if (response.status === 401) {
+            console.log('Token expired or invalid, attempting token refresh...');
+            
+            // Try to refresh token before logging out
+            try {
+                const refreshResponse = await fetch(`${BASE_URL}/auth/refresh`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (refreshResponse.ok) {
+                    const refreshData = await refreshResponse.json();
+                    localStorage.setItem('authToken', refreshData.token);
+                    console.log('Token refreshed successfully, new expiry:', new Date().toLocaleString());
+                    
+                    // Return a special error to indicate token was refreshed and request should be retried
+                    const retryError = new Error('Token refreshed, retry request');
+                    retryError.status = 'TOKEN_REFRESHED';
+                    throw retryError;
+                } else {
+                    throw new Error('Token refresh failed');
+                }
+            } catch (refreshError) {
+                if (refreshError.status === 'TOKEN_REFRESHED') {
+                    throw refreshError; // Let the calling code handle the retry
+                }
+                
+                console.log('Token refresh failed, logging out user');
+                // Import logout dynamically to avoid circular dependency
+                const { logout } = await import('./auth.js');
+                logout();
+                
+                // Redirect to login page if not already there
+                if (!window.location.pathname.includes('login.html')) {
+                    window.location.href = '/src/pages/login.html';
+                }
+                
+                // Create a specific error for token expiration
+                const error = new Error('Session expirée. Veuillez vous reconnecter.');
+                error.status = 401;
+                error.data = data;
+                throw error;
+            }
+        }
+
         // Construire un message d'erreur plus informatif
         const error = new Error(data.message || `Erreur ${response.status}: ${response.statusText}`);
         error.status = response.status;
@@ -26,8 +75,41 @@ async function handleResponse(response) {
     return data;
 }
 
+// Fonction générique pour les requêtes API avec fichiers
+export async function apiRequestWithFiles(endpoint, method = 'POST', formData, requiresAuth = false, retryCount = 0) {
+    const headers = {};
+
+    const token = localStorage.getItem('authToken');
+    if (requiresAuth && token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Ne pas définir Content-Type pour FormData, le navigateur le fera automatiquement avec boundary
+
+    const config = {
+        method: method,
+        headers: headers,
+        body: formData
+    };
+
+    try {
+        devLog(`API Request with files: ${method} ${BASE_URL}${endpoint}`);
+        const response = await fetch(`${BASE_URL}${endpoint}`, config);
+        return await handleResponse(response);
+    } catch (error) {
+        // Handle token refresh retry
+        if (error.status === 'TOKEN_REFRESHED' && retryCount === 0) {
+            console.log('Retrying file upload request with refreshed token...');
+            return apiRequestWithFiles(endpoint, method, formData, requiresAuth, 1);
+        }
+        
+        appError(`API Call Failed: ${method} ${endpoint}`, error);
+        throw error;
+    }
+}
+
 // Fonction générique pour les requêtes API
-export async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = false) {
+export async function apiRequest(endpoint, method = 'GET', body = null, requiresAuth = false, retryCount = 0) {
     const headers = {
         'Content-Type': 'application/json',
     };
@@ -51,6 +133,12 @@ export async function apiRequest(endpoint, method = 'GET', body = null, requires
         const response = await fetch(`${BASE_URL}${endpoint}`, config);
         return await handleResponse(response);
     } catch (error) {
+        // Handle token refresh retry
+        if (error.status === 'TOKEN_REFRESHED' && retryCount === 0) {
+            console.log('Retrying request with refreshed token...');
+            return apiRequest(endpoint, method, body, requiresAuth, 1);
+        }
+        
         // error.data et error.message sont déjà formatés par handleResponse ou par fetch lui-même
         appError(`API Call Failed: ${method} ${endpoint}`, error);
         throw error;
@@ -63,6 +151,7 @@ export const authAPI = {
     register: (userData) => apiRequest('/auth/register', 'POST', userData),
     getProfile: () => apiRequest('/auth/profile', 'GET', null, true),
     updateProfile: (profileData) => apiRequest('/auth/profile', 'PUT', profileData, true),
+    refreshToken: () => apiRequest('/auth/refresh', 'POST', null, true),
 };
 
 export const productAPI = {
@@ -174,8 +263,20 @@ export const productAdminAPI = {
         return apiRequest(`/products/admin/all${queryParams ? '?' + queryParams : ''}`, 'GET', null, true);
     },
     getById: (id) => apiRequest(`/products/admin/${id}`, 'GET', null, true),
-    create: (productData) => apiRequest('/products', 'POST', productData, true),
-    update: (id, productData) => apiRequest(`/products/admin/${id}`, 'PUT', productData, true),
+    create: (productData) => {
+        // Si productData est un FormData, utiliser apiRequestWithFiles
+        if (productData instanceof FormData) {
+            return apiRequestWithFiles('/products', 'POST', productData, true);
+        }
+        return apiRequest('/products', 'POST', productData, true);
+    },
+    update: (id, productData) => {
+        // Si productData est un FormData, utiliser apiRequestWithFiles
+        if (productData instanceof FormData) {
+            return apiRequestWithFiles(`/products/admin/${id}`, 'PUT', productData, true);
+        }
+        return apiRequest(`/products/admin/${id}`, 'PUT', productData, true);
+    },
     delete: (id) => apiRequest(`/products/admin/${id}`, 'DELETE', null, true),
     getStats: () => apiRequest('/products/admin/stats', 'GET', null, true),
 };

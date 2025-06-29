@@ -9,6 +9,33 @@ const AUTH_TOKEN_KEY = 'authToken';
 
 let currentUser = null;
 
+// Helper function to decode JWT token (client-side only for debugging)
+function decodeJWT(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Error decoding JWT:', error);
+        return null;
+    }
+}
+
+// Helper function to check if token is close to expiring (within 5 minutes)
+function isTokenNearExpiry(token) {
+    const decoded = decodeJWT(token);
+    if (!decoded || !decoded.exp) return true;
+    
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timeUntilExpiry = decoded.exp - currentTime;
+    
+    // Return true if token expires within 5 minutes (300 seconds)
+    return timeUntilExpiry < 300;
+}
+
 export function getCurrentUser() {
     if (currentUser) return currentUser;
     const userInfo = localStorage.getItem(USER_INFO_KEY);
@@ -22,7 +49,7 @@ export function getCurrentUser() {
             return null;
         }
     }
-    return null;
+    return null; 
 }
 
 export function getToken() {
@@ -33,6 +60,14 @@ export async function login(email, password) {
     try {
         const data = await authAPI.login({ email, password });
         localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        
+        // Debug: Log token expiration info
+        const decoded = decodeJWT(data.token);
+        if (decoded) {
+            const expiryDate = new Date(decoded.exp * 1000);
+            console.log('New token expires at:', expiryDate.toLocaleString());
+        }
+        
         const userProfile = { _id: data._id, firstName: data.firstName, lastName: data.lastName, email: data.email, role: data.role };
         localStorage.setItem(USER_INFO_KEY, JSON.stringify(userProfile));
         currentUser = userProfile;
@@ -123,11 +158,34 @@ export function checkAuthState() {
     if (token) {
         const user = getCurrentUser(); // Tente de charger depuis localStorage
         if (user) {
-            // Optionnel: Valider le token avec un appel silencieux à /auth/profile
-            // pour s'assurer qu'il est toujours valide côté serveur.
-            // Si l'appel échoue (ex: token expiré), appeler logout().
-            // Pour l'instant, on se fie à la présence locale.
-            console.log('User is considered logged in (local state):', user);
+            // Check if token is close to expiring and refresh it proactively
+            if (isTokenNearExpiry(token)) {
+                console.log('Token is near expiry, attempting proactive refresh...');
+                authAPI.refreshToken()
+                    .then((response) => {
+                        localStorage.setItem(AUTH_TOKEN_KEY, response.token);
+                        console.log('Token refreshed proactively');
+                    })
+                    .catch((error) => {
+                        console.warn('Proactive token refresh failed:', error.message);
+                        if (error.status === 401) {
+                            logout();
+                        }
+                    });
+            }
+            
+            // Validate token by trying to get profile silently
+            authAPI.getProfile()
+                .then(() => {
+                    console.log('User token is valid:', user);
+                })
+                .catch((error) => {
+                    if (error.status === 401) {
+                        console.log('Token expired during auth check, user will be logged out on next API call');
+                    } else {
+                        console.warn('Error checking auth state:', error.message);
+                    }
+                });
         } else {
             console.log('Token found but no user info, logging out.');
             logout(); // Nettoie un état potentiellement invalide

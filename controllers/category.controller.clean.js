@@ -6,6 +6,10 @@ const Product = require('../models/product.model'); // Pour vérifier si des pro
 // @access  Private/Admin
 exports.createCategory = async (req, res) => {
     try {
+        console.log('=== Category Creation Debug ===');
+        console.log('req.body:', req.body);
+        console.log('req.user:', req.user ? { id: req.user._id, role: req.user.role } : 'No user');
+        
         const { name, description, parentCategory, image, isFeatured } = req.body;
 
         if (!name) {
@@ -19,20 +23,43 @@ exports.createCategory = async (req, res) => {
             return res.status(400).json({ message: 'Une catégorie avec ce nom existe déjà.' });
         }
 
+        // Process image data - handle both string URL and object format
+        let processedImage = null;
+        if (image) {
+            if (typeof image === 'string') {
+                // If image is just a URL string, convert to object format
+                processedImage = {
+                    url: image,
+                    altText: name || 'Image de catégorie'
+                };
+            } else if (typeof image === 'object' && image.url) {
+                // If image is already an object with url property
+                processedImage = {
+                    url: image.url,
+                    altText: image.altText || name || 'Image de catégorie'
+                };
+            }
+        }
+
         const category = new Category({
             name,
             description,
             parentCategory: parentCategory || null,
-            image,
+            image: processedImage,
             isFeatured: isFeatured || false
         });
 
         const createdCategory = await category.save();
+        console.log('Category created successfully:', createdCategory._id);
         res.status(201).json(createdCategory);
     } catch (error) {
         console.error("Erreur lors de la création de la catégorie:", error);
         if (error.code === 11000) { // Erreur de duplicata MongoDB (ex: slug unique)
             return res.status(400).json({ message: 'Une catégorie avec ce nom/slug existe déjà.', field: error.keyValue });
+        }
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: 'Données fournies invalides.', errors: messages });
         }
         res.status(500).json({ message: 'Erreur serveur lors de la création de la catégorie.', error: error.message });
     }
@@ -75,8 +102,6 @@ exports.getCategoryByIdOrSlug = async (req, res) => {
         console.error(`Erreur lors de la récupération de la catégorie ${req.params.idOrSlug}:`, error);
         if (error.kind === 'ObjectId' && !req.params.idOrSlug.match(/^[0-9a-fA-F]{24}$/)) {
              // Ce n'est pas un ObjectId, donc on ne logue pas d'erreur de cast, la recherche par slug a déjà échoué.
-        } else if (error.kind === 'ObjectId') {
-            return res.status(404).json({ message: 'Catégorie non trouvée (ID mal formé).' });
         }
         res.status(500).json({ message: 'Erreur serveur lors de la récupération de la catégorie.', error: error.message });
     }
@@ -86,46 +111,48 @@ exports.getCategoryByIdOrSlug = async (req, res) => {
 // @route   PUT /api/categories/:id
 // @access  Private/Admin
 exports.updateCategory = async (req, res) => {
-    // if (!isAdmin(req)) {
-    //     return res.status(403).json({ message: 'Accès refusé. Administrateur requis.' });
-    // }
     try {
-        const { name, description, parentCategory, image, isFeatured, slug } = req.body;
+        const { name, description, parentCategory, image, isFeatured } = req.body;
         const category = await Category.findById(req.params.id);
 
-        if (category) {
-            category.name = name || category.name;
-            category.description = description === undefined ? category.description : description;
-            category.parentCategory = parentCategory === undefined ? category.parentCategory : (parentCategory || null);
-            category.image = image === undefined ? category.image : image;
-            category.isFeatured = isFeatured === undefined ? category.isFeatured : isFeatured;
-
-            // Si le nom change, le slug sera mis à jour par le hook pre-save
-            // Si un slug est explicitement fourni et différent, on pourrait vouloir le gérer,
-            // mais attention aux implications SEO. Pour l'instant, on laisse le hook gérer.
-            if (slug && slug !== category.slug) {
-                // Vérifier si le nouveau slug est unique s'il est fourni manuellement
-                const slugExists = await Category.findOne({ slug: slug, _id: { $ne: category._id } });
-                if (slugExists) {
-                    return res.status(400).json({ message: 'Ce slug est déjà utilisé par une autre catégorie.' });
-                }
-                category.slug = slug;
-            }
-
-            category.updatedAt = Date.now();
-
-            const updatedCategory = await category.save();
-            res.json(updatedCategory);
-        } else {
-            res.status(404).json({ message: 'Catégorie non trouvée.' });
+        if (!category) {
+            return res.status(404).json({ message: 'Catégorie non trouvée.' });
         }
+
+        // Process image data - handle both string URL and object format
+        let processedImage = image;
+        if (image !== undefined) {
+            if (typeof image === 'string') {
+                // If image is just a URL string, convert to object format
+                processedImage = image ? {
+                    url: image,
+                    altText: name || category.name || 'Image de catégorie'
+                } : null;
+            } else if (typeof image === 'object' && image !== null) {
+                // If image is an object, ensure it has the right structure
+                processedImage = {
+                    url: image.url || '',
+                    altText: image.altText || name || category.name || 'Image de catégorie'
+                };
+            }
+        }
+
+        category.name = name || category.name;
+        category.description = description === undefined ? category.description : description;
+        category.parentCategory = parentCategory === undefined ? category.parentCategory : (parentCategory || null);
+        category.image = processedImage === undefined ? category.image : processedImage;
+        category.isFeatured = isFeatured === undefined ? category.isFeatured : isFeatured;
+
+        const updatedCategory = await category.save();
+        res.json(updatedCategory);
     } catch (error) {
-        console.error(`Erreur lors de la mise à jour de la catégorie ${req.params.id}:`, error);
+        console.error("Erreur lors de la mise à jour de la catégorie:", error);
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: 'Données fournies invalides.', errors: messages });
+        }
         if (error.code === 11000) {
             return res.status(400).json({ message: 'Une catégorie avec ce nom/slug existe déjà.', field: error.keyValue });
-        }
-        if (error.kind === 'ObjectId') {
-            return res.status(404).json({ message: 'Catégorie non trouvée (ID mal formé).' });
         }
         res.status(500).json({ message: 'Erreur serveur lors de la mise à jour de la catégorie.', error: error.message });
     }
@@ -135,39 +162,181 @@ exports.updateCategory = async (req, res) => {
 // @route   DELETE /api/categories/:id
 // @access  Private/Admin
 exports.deleteCategory = async (req, res) => {
-    // if (!isAdmin(req)) {
-    //     return res.status(403).json({ message: 'Accès refusé. Administrateur requis.' });
-    // }
     try {
         const category = await Category.findById(req.params.id);
 
-        if (category) {
-            // Vérifier si des produits sont associés à cette catégorie
-            const productsInCategory = await Product.countDocuments({ categories: category._id });
-            if (productsInCategory > 0) {
-                return res.status(400).json({
-                    message: `Impossible de supprimer la catégorie '${category.name}' car ${productsInCategory} produit(s) y sont associés. Veuillez d'abord réassigner ou supprimer ces produits.`
-                });
-            }
-
-            // Vérifier si c'est une catégorie parente
-            const childCategories = await Category.countDocuments({ parentCategory: category._id });
-            if (childCategories > 0) {
-                return res.status(400).json({
-                     message: `Impossible de supprimer la catégorie '${category.name}' car elle est parente de ${childCategories} autre(s) catégorie(s). Veuillez d'abord supprimer ou réassigner les catégories enfants.`
-                });
-            }
-
-            await category.deleteOne();
-            res.json({ message: 'Catégorie supprimée avec succès.' });
-        } else {
-            res.status(404).json({ message: 'Catégorie non trouvée.' });
+        if (!category) {
+            return res.status(404).json({ message: 'Catégorie non trouvée.' });
         }
+
+        // Vérifier s'il y a des produits qui utilisent cette catégorie
+        const productsCount = await Product.countDocuments({ categories: req.params.id });
+        if (productsCount > 0) {
+            return res.status(400).json({ 
+                message: `Impossible de supprimer la catégorie. Elle est utilisée par ${productsCount} produit(s).` 
+            });
+        }
+
+        await Category.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Catégorie supprimée avec succès.' });
     } catch (error) {
-        console.error(`Erreur lors de la suppression de la catégorie ${req.params.id}:`, error);
-        if (error.kind === 'ObjectId') {
-            return res.status(404).json({ message: 'Catégorie non trouvée (ID mal formé).' });
-        }
+        console.error("Erreur lors de la suppression de la catégorie:", error);
         res.status(500).json({ message: 'Erreur serveur lors de la suppression de la catégorie.', error: error.message });
+    }
+};
+
+// @desc    Récupérer toutes les catégories avec comptage de produits (admin)
+// @route   GET /api/categories/admin/all
+// @access  Private/Admin
+exports.getAllCategoriesAdmin = async (req, res) => {
+    try {
+        const categories = await Category.find({})
+            .populate('parentCategory', 'name slug')
+            .sort({ name: 1 });
+
+        // Ajouter le comptage de produits pour chaque catégorie
+        const categoriesWithCount = await Promise.all(
+            categories.map(async (category) => {
+                const productCount = await Product.countDocuments({ categories: category._id });
+                return {
+                    ...category.toObject(),
+                    productCount
+                };
+            })
+        );
+
+        res.json(categoriesWithCount);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des catégories admin:", error);
+        res.status(500).json({ message: 'Erreur serveur lors de la récupération des catégories.', error: error.message });
+    }
+};
+
+// @desc    Mettre à jour une catégorie (admin)
+// @route   PUT /api/categories/admin/:id
+// @access  Private/Admin
+exports.updateCategoryAdmin = async (req, res) => {
+    try {
+        const { name, description, parentCategory, image, isFeatured } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ message: 'Le nom de la catégorie est requis.' });
+        }
+
+        const category = await Category.findById(req.params.id);
+        if (!category) {
+            return res.status(404).json({ message: 'Catégorie non trouvée.' });
+        }
+
+        // Vérifier si le nom existe déjà (sauf pour la catégorie actuelle)
+        const existingCategory = await Category.findOne({ 
+            name: name, 
+            _id: { $ne: req.params.id } 
+        });
+        if (existingCategory) {
+            return res.status(400).json({ message: 'Une catégorie avec ce nom existe déjà.' });
+        }
+
+        // Process image data - handle both string URL and object format
+        let processedImage = image;
+        if (image !== undefined) {
+            if (typeof image === 'string') {
+                // If image is just a URL string, convert to object format
+                processedImage = image ? {
+                    url: image,
+                    altText: name || 'Image de catégorie'
+                } : null;
+            } else if (typeof image === 'object' && image !== null) {
+                // If image is an object, ensure it has the right structure
+                processedImage = {
+                    url: image.url || '',
+                    altText: image.altText || name || 'Image de catégorie'
+                };
+            }
+        }
+
+        category.name = name;
+        category.description = description || '';
+        category.parentCategory = parentCategory || null;
+        category.image = processedImage === undefined ? category.image : processedImage;
+        category.isFeatured = isFeatured || false;
+
+        const updatedCategory = await category.save();
+        res.json(updatedCategory);
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de la catégorie admin:", error);
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: 'Données fournies invalides.', errors: messages });
+        }
+        if (error.code === 11000) {
+            return res.status(400).json({ message: 'Une catégorie avec ce nom/slug existe déjà.', field: error.keyValue });
+        }
+        res.status(500).json({ message: 'Erreur serveur lors de la mise à jour de la catégorie.', error: error.message });
+    }
+};
+
+// @desc    Supprimer une catégorie (admin)
+// @route   DELETE /api/categories/admin/:id
+// @access  Private/Admin
+exports.deleteCategoryAdmin = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({ message: 'Catégorie non trouvée.' });
+        }
+
+        // Vérifier s'il y a des produits qui utilisent cette catégorie
+        const productsCount = await Product.countDocuments({ categories: req.params.id });
+        if (productsCount > 0) {
+            return res.status(400).json({ 
+                message: `Impossible de supprimer la catégorie. Elle est utilisée par ${productsCount} produit(s).` 
+            });
+        }
+
+        await Category.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Catégorie supprimée avec succès.' });
+    } catch (error) {
+        console.error("Erreur lors de la suppression de la catégorie admin:", error);
+        res.status(500).json({ message: 'Erreur serveur lors de la suppression de la catégorie.', error: error.message });
+    }
+};
+
+// @desc    Obtenir les statistiques des catégories (admin)
+// @route   GET /api/categories/admin/stats
+// @access  Private/Admin
+exports.getCategoryStats = async (req, res) => {
+    try {
+        const totalCategories = await Category.countDocuments({});
+        const featuredCategories = await Category.countDocuments({ isFeatured: true });
+        const categoriesWithProducts = await Category.aggregate([
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: 'categories',
+                    as: 'products'
+                }
+            },
+            {
+                $match: {
+                    'products.0': { $exists: true }
+                }
+            },
+            {
+                $count: 'count'
+            }
+        ]);
+
+        res.json({
+            totalCategories,
+            featuredCategories,
+            categoriesWithProducts: categoriesWithProducts[0]?.count || 0,
+            emptyCategoriesCount: totalCategories - (categoriesWithProducts[0]?.count || 0)
+        });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des statistiques des catégories:", error);
+        res.status(500).json({ message: 'Erreur serveur lors de la récupération des statistiques.', error: error.message });
     }
 };

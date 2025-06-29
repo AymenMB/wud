@@ -6,11 +6,35 @@ const User = require('../models/user.model'); // Pour l'auteur
 // @access  Private/Admin
 exports.createBlogPost = async (req, res) => {
     const { title, content, excerpt, category, tags, featuredImage, status, isFeatured } = req.body;
+    
+    // Check if user is authenticated
+    if (!req.user) {
+        return res.status(401).json({ message: 'Utilisateur non authentifié.' });
+    }
+    
     const authorId = req.user._id; // L'admin connecté est l'auteur
 
     try {
         if (!title || !content) {
             return res.status(400).json({ message: 'Le titre et le contenu sont requis.' });
+        }
+
+        // Process featured image - handle both string URL and object format
+        let processedFeaturedImage = null;
+        if (featuredImage) {
+            if (typeof featuredImage === 'string') {
+                // If featuredImage is just a URL string, convert to object format
+                processedFeaturedImage = {
+                    url: featuredImage,
+                    altText: title || 'Image de l\'article'
+                };
+            } else if (typeof featuredImage === 'object' && featuredImage.url) {
+                // If featuredImage is already an object with url property
+                processedFeaturedImage = {
+                    url: featuredImage.url,
+                    altText: featuredImage.altText || title || 'Image de l\'article'
+                };
+            }
         }
 
         // Le slug est généré automatiquement par le hook pre-save du modèle BlogPost
@@ -23,7 +47,7 @@ exports.createBlogPost = async (req, res) => {
             author: authorId,
             category,
             tags,
-            featuredImage, // { url: String, altText: String }
+            featuredImage: processedFeaturedImage, // { url: String, altText: String }
             status: status || 'draft', // Par défaut 'draft' si non fourni
             isFeatured: isFeatured || false,
             // views et publishedAt sont gérés par le modèle ou d'autres logiques
@@ -43,7 +67,7 @@ exports.createBlogPost = async (req, res) => {
         if (error.code === 11000) { // Erreur de duplicata (slug ou titre unique)
             return res.status(400).json({ message: `Un article avec ce titre/slug existe déjà.`, field: error.keyValue });
         }
-        res.status(500).json({ message: 'Erreur serveur.', error: error.message });
+        res.status(500).json({ message: 'Erreur serveur lors de la création de l\'article.', error: error.message });
     }
 };
 
@@ -180,13 +204,31 @@ exports.updateBlogPost = async (req, res) => {
             return res.status(404).json({ message: 'Article non trouvé.' });
         }
 
+        // Process featured image - handle both string URL and object format
+        let processedFeaturedImage = featuredImage;
+        if (featuredImage !== undefined) {
+            if (typeof featuredImage === 'string') {
+                // If featuredImage is just a URL string, convert to object format
+                processedFeaturedImage = featuredImage ? {
+                    url: featuredImage,
+                    altText: title || post.title || 'Image de l\'article'
+                } : null;
+            } else if (typeof featuredImage === 'object' && featuredImage !== null) {
+                // If featuredImage is an object, ensure it has the right structure
+                processedFeaturedImage = {
+                    url: featuredImage.url || '',
+                    altText: featuredImage.altText || title || post.title || 'Image de l\'article'
+                };
+            }
+        }
+
         // L'auteur ne change pas, sauf si explicitement permis par une autre logique
         post.title = title || post.title;
         post.content = content || post.content;
         post.excerpt = excerpt === undefined ? post.excerpt : excerpt;
         post.category = category === undefined ? post.category : category;
         post.tags = tags || post.tags;
-        post.featuredImage = featuredImage === undefined ? post.featuredImage : featuredImage;
+        post.featuredImage = processedFeaturedImage === undefined ? post.featuredImage : processedFeaturedImage;
         post.status = status || post.status;
         post.isFeatured = isFeatured === undefined ? post.isFeatured : isFeatured;
 

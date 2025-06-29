@@ -4,7 +4,8 @@ const {
     registerUser,
     loginUser,
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    refreshToken
 } = require('../controllers/auth.controller');
 const { protect } = require('../middleware/auth.middleware'); // Seulement 'protect' est nécessaire ici pour les routes de profil
 
@@ -27,6 +28,11 @@ router.get('/profile', protect, getUserProfile);
 // @desc    Mettre à jour le profil de l'utilisateur connecté
 // @access  Private (protégé)
 router.put('/profile', protect, updateUserProfile);
+
+// @route   POST /api/auth/refresh
+// @desc    Actualiser le token de l'utilisateur connecté
+// @access  Private (protégé)
+router.post('/refresh', protect, refreshToken);
 
 // Une route de déconnexion n'est généralement pas nécessaire avec JWT côté serveur,
 // car la déconnexion est gérée côté client en supprimant le token.

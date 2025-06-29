@@ -2,6 +2,7 @@ require('dotenv').config(); // Charger les variables d'environnement en premier
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 
@@ -9,8 +10,11 @@ const app = express();
 app.use(cors({
     origin: process.env.CORS_ORIGIN || '*' // Configurer l'origine CORS
 }));
-app.use(express.json()); // Pour parser les requêtes JSON
-app.use(express.urlencoded({ extended: true })); // Pour parser les requêtes URL-encoded
+app.use(express.json({ limit: '50mb' })); // Pour parser les requêtes JSON avec limite augmentée
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Pour parser les requêtes URL-encoded avec limite augmentée
+
+// Servir les fichiers statiques (images uploadées)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Variables d'environnement
 const PORT = process.env.PORT || 3001; // Port par défaut si non spécifié
@@ -22,7 +26,10 @@ if (!MONGODB_URI) {
 }
 
 // Connexion à MongoDB
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
 .then(() => console.log('Connecté à MongoDB avec succès !'))
 .catch(err => {
     console.error('Erreur de connexion à MongoDB:', err);
@@ -31,7 +38,7 @@ mongoose.connect(MONGODB_URI)
 
 // Route de test simple
 app.get('/', (req, res) => {
-    res.json({ message: 'Bienvenue sur l\'API de Wud E-commerce ! Le serveur fonctionne.' });
+    res.json({ message: 'Bienvenue sur l\'API de Wud E-commerce ! Le serveur fonctionne parfaitement.' });
 });
 
 // Importer les routes

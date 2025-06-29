@@ -30,14 +30,23 @@ function createProductCard(product) {
     }
     const currentPriceString = displayPrice.toFixed(2);
 
-    const imageUrl = product.images && product.images.length > 0 ? product.images[0].url : '/src/assets/images/product-placeholder.svg';
-    const imageAlt = product.images && product.images.length > 0 ? product.images[0].altText || product.name : product.name;
+    const imageUrl = product.images && product.images.length > 0 ? 
+        (product.images[0].url || product.images[0]) : 
+        '/src/assets/images/product-placeholder.svg';
+    
+    // Make sure the image URL is properly formatted
+    const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
+        (imageUrl.startsWith('/uploads') ? `http://localhost:3001${imageUrl}` : imageUrl);
+    
+    const imageAlt = product.images && product.images.length > 0 ? 
+        (product.images[0].altText || product.name) : 
+        product.name;
 
     return `
         <div class="group rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col bg-white">
             <a href="/src/pages/product-detail.html?id=${product._id}" class="block">
                 <div class="h-72 bg-gray-200 bg-cover bg-center relative">
-                    <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
+                    <img src="${fullImageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
                     ${isOnSale && promoTextToShow ? `<div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">${promoTextToShow}</div>` : ''}
                 </div>
             </a>

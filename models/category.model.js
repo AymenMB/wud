@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const categorySchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true, trim: true },
-    slug: { type: String, required: true, unique: true, trim: true, lowercase: true }, // Pour les URLs amicales
+    slug: { type: String, unique: true, trim: true, lowercase: true }, // Pour les URLs amicales
     description: { type: String },
     parentCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', default: null },
     image: {

@@ -136,7 +136,6 @@ function buildAPIParams() {
     
     if (currentFilters.sortBy !== 'default') {
         params.sortBy = currentFilters.sortBy;
-        params.sortOrder = 'asc';
     }
     
     params.page = currentPage;
@@ -175,6 +174,13 @@ function renderCategoryFilters(categories) {
 // Obtenir une icône pour la catégorie
 function getCategoryIcon(categoryName) {
     const icons = {
+        'Cuisine': '🪵',
+        'Salle à Manger': '🪵', 
+        'Cuisine & Salle à Manger': '🪵',
+        'Chambre': '🪵',
+        'Meubles de Chambre': '🪵',
+        'Salon': '🪵',
+        'Meubles de Salon': '🪵',
         'Tables': '🪑',
         'Chaises': '🪑',
         'Assises': '🛋️',
@@ -187,8 +193,15 @@ function getCategoryIcon(categoryName) {
         'Canapés': '🛋️'
     };
     
+    // Recherche exacte d'abord
+    if (icons[categoryName]) {
+        return icons[categoryName];
+    }
+    
+    // Recherche partielle ensuite
     for (const [key, icon] of Object.entries(icons)) {
-        if (categoryName.toLowerCase().includes(key.toLowerCase())) {
+        if (categoryName.toLowerCase().includes(key.toLowerCase()) || 
+            key.toLowerCase().includes(categoryName.toLowerCase())) {
             return icon;
         }
     }
@@ -223,14 +236,23 @@ function createProductCard(product) {
     }
     const currentPriceString = displayPrice.toFixed(2);
 
-    const imageUrl = product.images && product.images.length > 0 ? product.images[0].url : 'https://via.placeholder.com/400x300.png/A07C5B/FFFFFF?text=Produit';
-    const imageAlt = product.images && product.images.length > 0 ? product.images[0].altText || product.name : product.name;
+    const imageUrl = product.images && product.images.length > 0 ? 
+        (product.images[0].url || product.images[0]) : 
+        'https://via.placeholder.com/400x300.png/A07C5B/FFFFFF?text=Produit';
+    
+    // Make sure the image URL is properly formatted
+    const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
+        (imageUrl.startsWith('/uploads') ? `http://localhost:3001${imageUrl}` : imageUrl);
+    
+    const imageAlt = product.images && product.images.length > 0 ? 
+        (product.images[0].altText || product.name) : 
+        product.name;
 
     return `
         <div class="group rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col bg-white">
             <a href="/src/pages/product-detail.html?id=${product._id}" class="block">
                 <div class="h-64 bg-gray-200 bg-cover bg-center relative">
-                    <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
+                    <img src="${fullImageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
                     ${isOnSale && promoTextToShow ? `<div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">${promoTextToShow}</div>` : ''}
                 </div>
             </a>
@@ -256,6 +278,8 @@ function createProductCard(product) {
 
 function updateFilterControlsUI() {
     devLog("Updating filter controls UI from state:", currentFilters);
+    
+    // Update category filters
     const filterCategoriesList = document.getElementById('filter-categories');
     if (filterCategoriesList) {
         filterCategoriesList.querySelectorAll('a').forEach(a => {
@@ -266,11 +290,13 @@ function updateFilterControlsUI() {
         });
     }
 
+    // Update wood checkboxes
     const woodCheckboxes = document.querySelectorAll('#filter-wood input[type="checkbox"]');
     woodCheckboxes.forEach(cb => {
         cb.checked = currentFilters.wood.includes(cb.value);
     });
 
+    // Update price range slider
     const priceRangeInput = document.getElementById('price-range');
     const priceRangeValueDisplay = document.getElementById('price-range-value');
     if (priceRangeInput && priceRangeValueDisplay) {
@@ -278,11 +304,22 @@ function updateFilterControlsUI() {
         priceRangeValueDisplay.textContent = currentFilters.maxPrice + ' €';
     }
 
+    // Update price preset filters
+    const pricePresetFilters = document.querySelectorAll('.price-preset-filter');
+    pricePresetFilters.forEach(filter => {
+        const [min, max] = filter.value.split('-').map(v => parseInt(v));
+        filter.checked = (currentFilters.minPrice === min && currentFilters.maxPrice === max);
+    });
+
+    // Update sort by select
     const sortBySelect = document.getElementById('sort-by');
     if (sortBySelect) sortBySelect.value = currentFilters.sortBy;
 
+    // Update search input
     const searchInputHeader = document.getElementById('search-input');
-    if (searchInputHeader && currentFilters.search) searchInputHeader.value = currentFilters.search;
+    if (searchInputHeader && currentFilters.search !== searchInputHeader.value) {
+        searchInputHeader.value = currentFilters.search;
+    }
 }
 
 function initFilters() {
@@ -347,6 +384,7 @@ function attachCatalogEventListeners() {
             checkbox.addEventListener('change', () => {
                 currentFilters.wood = Array.from(woodFilters).filter(cb => cb.checked).map(cb => cb.value);
                 currentPage = 1;
+                devLog('Wood filters changed:', currentFilters.wood);
                 loadProducts();
             });
         });
@@ -361,15 +399,88 @@ function attachCatalogEventListeners() {
             priceRangeInput.addEventListener('change', (e) => {
                 currentFilters.maxPrice = parseInt(e.target.value);
                 currentPage = 1;
+                devLog('Price range changed:', currentFilters.maxPrice);
+                
+                // Désélectionner les filtres de prix prédéfinis
+                const presetFilters = document.querySelectorAll('.price-preset-filter');
+                presetFilters.forEach(filter => filter.checked = false);
+                
                 loadProducts();
             });
         }
+
+        // Price preset filters
+        const pricePresetFilters = document.querySelectorAll('.price-preset-filter');
+        pricePresetFilters.forEach(filter => {
+            filter.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    const value = e.target.value;
+                    const [min, max] = value.split('-').map(v => parseInt(v));
+                    
+                    currentFilters.minPrice = min;
+                    currentFilters.maxPrice = max;
+                    currentPage = 1;
+                    
+                    // Mettre à jour le slider de prix
+                    if (priceRangeInput) {
+                        priceRangeInput.value = max;
+                    }
+                    if (priceRangeValueDisplay) {
+                        priceRangeValueDisplay.textContent = max + ' €';
+                    }
+                    
+                    devLog('Price preset changed:', { min, max });
+                    loadProducts();
+                }
+            });
+        });
 
         // Apply filters button
         const applyFiltersBtn = document.getElementById('apply-filters-btn');
         if (applyFiltersBtn) {
             applyFiltersBtn.addEventListener('click', () => {
                 currentPage = 1;
+                devLog('Apply filters clicked');
+                loadProducts();
+            });
+        }
+
+        // Reset filters button
+        const resetFiltersBtn = document.getElementById('reset-filters-btn');
+        if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener('click', () => {
+                // Reset all filters to default
+                currentFilters = {
+                    categoryId: null,
+                    wood: [],
+                    minPrice: 0,
+                    maxPrice: 5000,
+                    sortBy: 'default',
+                    search: ''
+                };
+                currentPage = 1;
+                
+                // Reset UI elements
+                updateFilterControlsUI();
+                
+                // Reset price range slider
+                if (priceRangeInput) {
+                    priceRangeInput.value = 5000;
+                }
+                if (priceRangeValueDisplay) {
+                    priceRangeValueDisplay.textContent = '5000€';
+                }
+                
+                // Reset price preset filters
+                const presetFilters = document.querySelectorAll('.price-preset-filter');
+                presetFilters.forEach(filter => filter.checked = false);
+                
+                // Reset search input
+                if (searchInputHeader) {
+                    searchInputHeader.value = '';
+                }
+                
+                devLog('Filters reset');
                 loadProducts();
             });
         }
@@ -380,6 +491,7 @@ function attachCatalogEventListeners() {
         sortBySelect.addEventListener('change', (e) => {
             currentFilters.sortBy = e.target.value;
             currentPage = 1;
+            devLog('Sort changed:', currentFilters.sortBy);
             loadProducts();
         });
     }
@@ -419,29 +531,46 @@ function attachCatalogEventListeners() {
 
     // Search functionality
     if (searchInputHeader) {
-        const performSearchFromHeader = () => {
+        const performSearchFromHeader = debounce(() => {
             const searchTerm = searchInputHeader.value.trim();
             if (document.body.id === 'catalog-page') {
                 currentFilters.search = searchTerm;
                 currentPage = 1;
-                updateFilterControlsUI();
+                devLog('Search changed:', searchTerm);
                 loadProducts();
-                const closeSearchModalButton = document.getElementById('close-search-modal');
-                if (closeSearchModalButton) closeSearchModalButton.click();
             } else {
                 window.location.href = `/src/pages/catalog.html?search=${encodeURIComponent(searchTerm)}`;
             }
-        };
+        }, 500);
+        
+        searchInputHeader.addEventListener('keyup', performSearchFromHeader);
         
         searchInputHeader.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') performSearchFromHeader();
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const searchTerm = searchInputHeader.value.trim();
+                if (document.body.id === 'catalog-page') {
+                    currentFilters.search = searchTerm;
+                    currentPage = 1;
+                    loadProducts();
+                } else {
+                    window.location.href = `/src/pages/catalog.html?search=${encodeURIComponent(searchTerm)}`;
+                }
+            }
         });
         
         const searchModalForm = document.querySelector('#search-modal form');
         if (searchModalForm) {
             searchModalForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                performSearchFromHeader();
+                const searchTerm = searchInputHeader.value.trim();
+                if (document.body.id === 'catalog-page') {
+                    currentFilters.search = searchTerm;
+                    currentPage = 1;
+                    loadProducts();
+                } else {
+                    window.location.href = `/src/pages/catalog.html?search=${encodeURIComponent(searchTerm)}`;
+                }
             });
         }
     }

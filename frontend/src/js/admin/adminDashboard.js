@@ -203,7 +203,7 @@ async function loadSectionContent(sectionId) {
             await loadAdminUsers();
             break;
         case 'custom-requests-management-content':
-            await loadCustomRequestsManagement();
+            await loadAdminCustomRequests();
             break;
         case 'blog-posts-management-content':
             await loadBlogPostsManagement();

@@ -10,7 +10,10 @@ const User = require('./models/user.model');
 async function initializeDatabase() {
     try {
         // Connect to MongoDB
-        await mongoose.connect(process.env.MONGODB_URI);
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
         console.log('Connected to MongoDB');
 
         // Clear existing data
@@ -34,19 +37,19 @@ async function initializeDatabase() {
                 name: 'Meubles de Salon',
                 slug: 'meubles-salon',
                 description: 'Tables basses, étagères, et mobilier de salon en bois massif',
-                isActive: true
+                isFeatured: true
             },
             {
                 name: 'Meubles de Chambre',
-                slug: 'meubles-chambre', 
+                slug: 'meubles-chambre',
                 description: 'Lits, commodes, et armoires en bois naturel',
-                isActive: true
+                isFeatured: false
             },
             {
                 name: 'Cuisine & Salle à Manger',
                 slug: 'cuisine-salle-manger',
                 description: 'Tables, chaises, et mobilier de cuisine artisanal',
-                isActive: true
+                isFeatured: true
             }
         ]);
 
@@ -54,83 +57,110 @@ async function initializeDatabase() {
         const products = await Product.insertMany([
             {
                 name: 'Table Basse Chêne Royal',
-                slug: 'table-basse-chene-royal',
                 sku: 'WUD-TB-001',
                 description: 'Table basse en chêne massif, finition huilée. Fabriquée artisanalement dans nos ateliers.',
                 price: 450.00,
                 stock: 12,
                 categories: [categories[0]._id],
-                woodType: 'Chêne',
-                dimensions: { length: 120, width: 60, height: 45 },
+                woodEssence: 'Chêne',
+                materials: 'Chêne massif',
+                dimensions: '120 x 60 x 45 cm',
                 weight: 25,
                 isPublished: true,
+                isFeatured: true,
+                tags: ['table', 'salon', 'chêne', 'artisanal'],
                 images: [
                     {
                         url: '/src/assets/images/placeholder-product.svg',
-                        altText: 'Table basse en chêne royal',
-                        isPrimary: true
+                        altText: 'Table basse en chêne royal'
+                    }
+                ],
+                variants: [
+                    {
+                        name: 'Essence de bois',
+                        options: [
+                            { value: 'Chêne', additionalPrice: 0, stock: 12 },
+                            { value: 'Noyer', additionalPrice: 100, stock: 8 }
+                        ]
                     }
                 ]
             },
             {
                 name: 'Étagère Murale Design',
-                slug: 'etagere-murale-design',
                 sku: 'WUD-EM-002',
                 description: 'Étagère murale moderne en noyer, design minimaliste et fonctionnel.',
                 price: 180.00,
                 stock: 8,
                 categories: [categories[0]._id],
-                woodType: 'Noyer',
-                dimensions: { length: 80, width: 20, height: 15 },
+                woodEssence: 'Noyer',
+                materials: 'Noyer massif',
+                dimensions: '80 x 20 x 15 cm',
                 weight: 8,
                 isPublished: true,
+                tags: ['étagère', 'mural', 'noyer', 'design'],
                 images: [
                     {
                         url: '/src/assets/images/placeholder-product.svg',
-                        altText: 'Étagère murale en noyer',
-                        isPrimary: true
+                        altText: 'Étagère murale en noyer'
                     }
                 ]
             },
             {
                 name: 'Lit King Size Scandinave',
-                slug: 'lit-king-size-scandinave',
                 sku: 'WUD-LIT-003',
                 description: 'Lit king size en pin massif, style scandinave épuré.',
                 price: 890.00,
                 stock: 5,
                 categories: [categories[1]._id],
-                woodType: 'Pin',
-                dimensions: { length: 200, width: 180, height: 90 },
+                woodEssence: 'Pin',
+                materials: 'Pin massif',
+                dimensions: '200 x 180 x 90 cm',
                 weight: 45,
                 isPublished: true,
+                isFeatured: true,
+                tags: ['lit', 'scandinave', 'pin', 'king size'],
                 images: [
                     {
                         url: '/src/assets/images/placeholder-product.svg',
-                        altText: 'Lit king size scandinave',
-                        isPrimary: true
+                        altText: 'Lit king size scandinave'
+                    }
+                ],
+                variants: [
+                    {
+                        name: 'Taille',
+                        options: [
+                            { value: 'Queen (160x200)', additionalPrice: -150, stock: 8 },
+                            { value: 'King (200x200)', additionalPrice: 0, stock: 5 }
+                        ]
                     }
                 ]
             },
             {
                 name: 'Table à Manger Rustique',
-                slug: 'table-manger-rustique',
                 sku: 'WUD-TAM-004',
                 description: 'Grande table à manger en chêne rustique pour 8 personnes.',
                 price: 1250.00,
                 stock: 3,
                 categories: [categories[2]._id],
-                woodType: 'Chêne',
-                dimensions: { length: 220, width: 100, height: 75 },
+                woodEssence: 'Chêne',
+                materials: 'Chêne rustique',
+                dimensions: '220 x 100 x 75 cm',
                 weight: 65,
                 isPublished: true,
+                isFeatured: true,
+                tags: ['table', 'manger', 'chêne', 'rustique', '8 personnes'],
                 images: [
                     {
                         url: '/src/assets/images/placeholder-product.svg',
-                        altText: 'Table à manger rustique',
-                        isPrimary: true
+                        altText: 'Table à manger rustique'
                     }
-                ]
+                ],
+                promotion: {
+                    discountPercentage: 10,
+                    startDate: new Date(),
+                    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+                    promoText: '-10%'
+                }
             }
         ]);
 

@@ -44,18 +44,30 @@ function displayProductDetails(product) {
     // Gérer promo
     const originalPriceEl = document.getElementById('product-original-price');
     const discountBadgeEl = document.getElementById('product-discount-badge');
-    if (product.promotion && product.promotion.discountPercentage > 0 && product.price_before_discount) { // Supposons que l'API renvoie price_before_discount
-        if(originalPriceEl) {
-            originalPriceEl.textContent = `${parseFloat(product.price_before_discount).toFixed(2)} €`;
-            originalPriceEl.classList.remove('hidden');
+    
+    const now = new Date();
+    let isOnSale = false;
+    
+    if (product.promotion) {
+        const startDate = product.promotion.startDate ? new Date(product.promotion.startDate) : null;
+        const endDate = product.promotion.endDate ? new Date(product.promotion.endDate) : null;
+        
+        if ((!startDate || startDate <= now) && (!endDate || endDate >= now)) {
+            isOnSale = true;
+            if (product.price_before_discount && originalPriceEl) {
+                originalPriceEl.textContent = `${parseFloat(product.price_before_discount).toFixed(2)} €`;
+                originalPriceEl.classList.remove('hidden');
+            }
+            if (discountBadgeEl) {
+                discountBadgeEl.textContent = product.promotion.promoText || `${product.promotion.discountPercentage}% OFF`;
+                discountBadgeEl.classList.remove('hidden');
+            }
         }
-        if(discountBadgeEl) {
-            discountBadgeEl.textContent = product.promotion.promoText || `${product.promotion.discountPercentage}% OFF`;
-            discountBadgeEl.classList.remove('hidden');
-        }
-    } else {
-        if(originalPriceEl) originalPriceEl.classList.add('hidden');
-        if(discountBadgeEl) discountBadgeEl.classList.add('hidden');
+    }
+    
+    if (!isOnSale) {
+        if (originalPriceEl) originalPriceEl.classList.add('hidden');
+        if (discountBadgeEl) discountBadgeEl.classList.add('hidden');
     }
 
 
@@ -65,20 +77,28 @@ function displayProductDetails(product) {
     const mainImage = document.getElementById('main-product-image');
     const thumbnailsContainer = document.getElementById('thumbnail-images');
     if (product.images && product.images.length > 0) {
+        const firstImageUrl = product.images[0].url || product.images[0];
+        const fullFirstImageUrl = firstImageUrl.startsWith('http') ? firstImageUrl : 
+            (firstImageUrl.startsWith('/uploads') ? `http://localhost:3001${firstImageUrl}` : firstImageUrl);
+            
         if(mainImage) {
-            mainImage.src = product.images[0].url;
+            mainImage.src = fullFirstImageUrl;
             mainImage.alt = product.images[0].altText || product.name;
         }
         if(thumbnailsContainer) {
-            thumbnailsContainer.innerHTML = product.images.map((img, index) => `
-                <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 ${index === 0 ? 'border-wud-accent' : 'border-transparent'} hover:border-wud-accent focus:border-wud-accent outline-none" data-image-url="${img.url}" data-image-alt="${img.altText || product.name}">
-                    <img src="${img.url}" alt="Miniature ${index + 1}" class="w-full h-full object-cover pointer-events-none">
+            thumbnailsContainer.innerHTML = product.images.map((img, index) => {
+                const imageUrl = img.url || img;
+                const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
+                    (imageUrl.startsWith('/uploads') ? `http://localhost:3001${imageUrl}` : imageUrl);
+                return `
+                <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 ${index === 0 ? 'border-wud-accent' : 'border-transparent'} hover:border-wud-accent focus:border-wud-accent outline-none" data-image-url="${fullImageUrl}" data-image-alt="${img.altText || product.name}">
+                    <img src="${fullImageUrl}" alt="Miniature ${index + 1}" class="w-full h-full object-cover pointer-events-none">
                 </button>
-            `).join('');
+            `}).join('');
         }
     } else {
         if(mainImage) {
-            mainImage.src = 'https://via.placeholder.com/600x600.png/A07C5B/FFFFFF?text=Image+Produit';
+            mainImage.src = '/src/assets/images/product-placeholder.svg';
             mainImage.alt = product.name;
         }
         if(thumbnailsContainer) thumbnailsContainer.innerHTML = '';

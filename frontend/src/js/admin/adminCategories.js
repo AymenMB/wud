@@ -18,7 +18,7 @@ function renderCategoryTable(categories, containerId = 'admin-category-list-tabl
         <tr class="border-b hover:bg-gray-50">
             <td class="py-2 px-3">
                 <div class="flex items-center">
-                    ${category.image ? `<img src="${category.image}" alt="${category.name}" class="w-8 h-8 rounded mr-2 object-cover">` : '<div class="w-8 h-8 bg-gray-200 rounded mr-2 flex items-center justify-center text-xs text-gray-500">📁</div>'}
+                            ${(category.image?.url || category.image) ? `<img src="${category.image?.url || category.image}" alt="${category.image?.altText || category.name}" class="w-8 h-8 rounded mr-2 object-cover">` : '<div class="w-8 h-8 bg-gray-200 rounded mr-2 flex items-center justify-center text-xs text-gray-500">📁</div>'}
                     <span class="text-sm font-medium">${category.name}</span>
                 </div>
             </td>
@@ -116,15 +116,14 @@ async function renderCategoryForm(category = {}, containerId = 'admin-category-f
                 <div>
                     <label for="category-image" class="block text-sm font-medium text-gray-700 mb-2">
                         URL de l'Image
-                    </label>
-                    <input 
-                        type="url" 
-                        id="category-image" 
-                        name="image" 
-                        value="${category.image || ''}" 
-                        class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-wud-primary focus:border-wud-primary transition-colors"
-                        placeholder="https://example.com/image.jpg"
-                    >
+                    </label>                        <input 
+                            type="url" 
+                            id="category-image" 
+                            name="image" 
+                            value="${category.image?.url || category.image || ''}" 
+                            class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-wud-primary focus:border-wud-primary transition-colors"
+                            placeholder="https://example.com/image.jpg"
+                        >
                 </div>
                 
                 <div class="flex items-center">

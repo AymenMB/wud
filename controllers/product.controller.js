@@ -1,41 +1,34 @@
 const Product = require('../models/product.model');
+const { processUploadedImages } = require('../utils/fileUpload');
 
 // @desc    Créer un nouveau produit
 // @route   POST /api/products
 // @access  Private/Admin
 exports.createProduct = async (req, res) => {
     try {
-        // TODO: Gestion de l'upload d'images (ex: avec Multer et Cloudinary)
-        // Si req.files ou req.file est populé par Multer:
-        // let imageUrls = [];
-        // if (req.files && req.files.length > 0) {
-        //   for (const file of req.files) {
-        //     // const result = await cloudinary.uploader.upload(file.path);
-        //     // imageUrls.push({ url: result.secure_url, altText: req.body.altTextForFileX || file.originalname });
-        //     // fs.unlinkSync(file.path); // Supprimer le fichier local après upload
-        //   }
-        // } else if (req.body.imageUrls && Array.isArray(req.body.imageUrls)) {
-        //   // Si on fournit des URLs directement (ex: lors d'une édition sans re-upload)
-        //   imageUrls = req.body.imageUrls.map(url => ({ url, altText: "Default alt text" }));
-        // }
-        // Les images finales à sauvegarder seraient dans imageUrls.
-
+        console.log('=== Product Creation Debug ===');
+        console.log('req.body:', req.body);
+        console.log('req.files:', req.files);
+        console.log('req.files length:', req.files ? req.files.length : 0);
+        
         const {
             name,
             description,
             price,
             sku,
             categories,
-            // images, // Seraient remplacées par imageUrls si l'upload est implémenté
             stock,
             variants,
             dimensions,
+            materials,
             woodEssence,
             usage,
             isFeatured,
             isPublished,
             tags,
-            promotion
+            promotion,
+            finish,
+            weight
         } = req.body;
 
         // Validation simple (peut être étendue avec une librairie comme Joi ou express-validator)
@@ -43,48 +36,165 @@ exports.createProduct = async (req, res) => {
             return res.status(400).json({ message: 'Veuillez fournir tous les champs requis (nom, description, prix, sku, catégories).' });
         }
 
+        // Traiter les images uploadées
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            console.log('=== Product Creation Image Processing ===');
+            console.log('Number of files received:', req.files.length);
+            
+            req.files.forEach((file, index) => {
+                console.log(`File ${index}:`, {
+                    originalname: file.originalname,
+                    filename: file.filename,
+                    size: file.size,
+                    mimetype: file.mimetype
+                });
+            });
+            
+            images = processUploadedImages(req.files);
+            console.log('Final processed images:', images);
+        } else {
+            console.log('No image files received');
+        }
+
+        // Traiter les catégories (si c'est une chaîne JSON, la parser)
+        let processedCategories = categories;
+        if (typeof categories === 'string') {
+            try {
+                processedCategories = JSON.parse(categories);
+            } catch (e) {
+                processedCategories = [categories];
+            }
+        }
+        
+        // Validation des catégories
+        if (!processedCategories || !Array.isArray(processedCategories) || processedCategories.length === 0) {
+            return res.status(400).json({ message: 'Au moins une catégorie est requise.' });
+        }
+        
+        // Filtrer les catégories vides
+        processedCategories = processedCategories.filter(cat => cat && cat.trim() !== '');
+        if (processedCategories.length === 0) {
+            return res.status(400).json({ message: 'Au moins une catégorie valide est requise.' });
+        }
+
+        // Traiter la promotion si fournie
+        let processedPromotion = undefined;
+        if (promotion) {
+            try {
+                processedPromotion = typeof promotion === 'string' ? JSON.parse(promotion) : promotion;
+                
+                // Calculer price_before_discount si une promotion est appliquée
+                if (processedPromotion && processedPromotion.discountPercentage > 0) {
+                    const priceBeforeDiscount = parseFloat(price) / (1 - processedPromotion.discountPercentage / 100);
+                    processedPromotion.price_before_discount = priceBeforeDiscount;
+                }
+            } catch (e) {
+                console.warn('Invalid promotion data:', e);
+                processedPromotion = undefined;
+            }
+        }
+
         const product = new Product({
             name,
             description,
-            price,
+            price: parseFloat(price),
             sku,
-            categories,
-            images: images || [],
-            stock: stock || 0,
-            variants: variants || [],
+            categories: processedCategories,
+            images,
+            stock: parseInt(stock) || 0,
+            variants: variants ? (typeof variants === 'string' ? JSON.parse(variants) : variants) : [],
             dimensions,
-            woodEssence,
-            usage: usage || [],
-            isFeatured: isFeatured || false,
-            isPublished: isPublished === undefined ? true : isPublished,
-            tags: tags || [],
-            promotion
+            materials: materials || woodEssence, // Support pour l'ancien champ woodEssence
+            usage: usage ? (typeof usage === 'string' ? JSON.parse(usage) : usage) : [],
+            isFeatured: isFeatured === 'true' || isFeatured === true,
+            isPublished: isPublished === 'true' || isPublished === true || isPublished === undefined,
+            tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
+            promotion: processedPromotion,
+            price_before_discount: processedPromotion && processedPromotion.price_before_discount ? processedPromotion.price_before_discount : undefined,
+            finish,
+            weight: weight ? parseFloat(weight) : undefined
         });
 
         const createdProduct = await product.save();
+        await createdProduct.populate('categories', 'name');
+        
         res.status(201).json(createdProduct);
     } catch (error) {
         console.error("Erreur lors de la création du produit:", error);
         if (error.code === 11000) { // Erreur de duplicata MongoDB (ex: SKU unique)
             return res.status(400).json({ message: 'Un produit avec ce SKU existe déjà.', field: error.keyValue });
         }
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: 'Données fournies invalides.', errors: messages });
+        }
         res.status(500).json({ message: 'Erreur serveur lors de la création du produit.', error: error.message });
     }
 };
 
-// @desc    Récupérer tous les produits (avec pagination et recherche par nom)
+// @desc    Récupérer tous les produits (avec pagination, recherche et filtres)
 // @route   GET /api/products
 // @access  Public
 exports.getAllProducts = async (req, res) => {
-    const pageSize = parseInt(req.query.pageSize) || 10; // Nombre d'éléments par page
+    const pageSize = parseInt(req.query.limit || req.query.pageSize) || 12; // Nombre d'éléments par page
     const page = parseInt(req.query.page) || 1;       // Page actuelle
-    const searchQuery = req.query.search || '';      // Terme de recherche pour le nom
+    const searchQuery = req.query.search || '';      // Terme de recherche
+    const category = req.query.category || '';        // Filtre par catégorie
+    const materials = req.query.materials || '';     // Filtre par matériaux/bois
+    const priceMin = parseFloat(req.query.priceMin) || 0;  // Prix minimum
+    const priceMax = parseFloat(req.query.priceMax) || Number.MAX_VALUE;  // Prix maximum
+    const sortBy = req.query.sortBy || 'createdAt';  // Champ de tri
+    const sortOrder = req.query.sortOrder || 'desc'; // Ordre de tri
 
     try {
         let query = {};
+        
+        // Recherche textuelle
         if (searchQuery) {
-            query.name = { $regex: searchQuery, $options: 'i' }; // Recherche insensible à la casse
+            query.$or = [
+                { name: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } },
+                { sku: { $regex: searchQuery, $options: 'i' } },
+                { tags: { $in: [new RegExp(searchQuery, 'i')] } },
+                { materials: { $regex: searchQuery, $options: 'i' } },
+                { woodEssence: { $regex: searchQuery, $options: 'i' } }
+            ];
         }
+        
+        // Filtre par catégorie
+        if (category && category !== 'all') {
+            query.categories = { $in: [category] };
+        }
+        
+        // Filtre par matériaux/essence de bois
+        if (materials) {
+            const materialsList = materials.split(',').map(m => m.trim());
+            query.$or = query.$or || [];
+            const materialQuery = {
+                $or: [
+                    { materials: { $in: materialsList.map(m => new RegExp(m, 'i')) } },
+                    { woodEssence: { $in: materialsList.map(m => new RegExp(m, 'i')) } },
+                    { tags: { $in: materialsList.map(m => new RegExp(m, 'i')) } }
+                ]
+            };
+            
+            if (query.$or.length > 0) {
+                // Si on a déjà une clause $or pour la recherche, on combine avec $and
+                query = {
+                    $and: [
+                        { $or: query.$or },
+                        materialQuery
+                    ]
+                };
+            } else {
+                query = { ...query, ...materialQuery };
+            }
+        }
+        
+        // Filtre par prix
+        query.price = { $gte: priceMin, $lte: priceMax };
+        
         // Par défaut, on ne filtre que les produits publiés pour le public
         query.isPublished = true;
 
@@ -92,28 +202,38 @@ exports.getAllProducts = async (req, res) => {
         if (req.query.isFeatured === 'true') {
             query.isFeatured = true;
         }
-        // Si le paramètre isPublished est explicitement fourni (ex: 'false' ou 'all' pour admin)
-        // Note: la route /admin/all gère déjà le cas de tous les produits pour l'admin
-        // Ici, on s'assure que si isPublished n'est pas 'false', il reste à true ou est ignoré.
-        if (req.query.isPublished === 'false') {
-             // Pourrait être utilisé par un admin pour voir les non publiés SANS passer par /admin/all
-             // Mais attention, cette route est publique. Il vaut mieux garder query.isPublished = true pour les non-admins.
-             // query.isPublished = false; // Ne pas faire ça ici sans check de rôle
-        }
 
+        // Construire l'objet de tri
+        const sort = {};
+        if (sortBy === 'price-asc') {
+            sort.price = 1;
+        } else if (sortBy === 'price-desc') {
+            sort.price = -1;
+        } else if (sortBy === 'name-asc') {
+            sort.name = 1;
+        } else if (sortBy === 'name-desc') {
+            sort.name = -1;
+        } else if (sortBy === 'latest') {
+            sort.createdAt = -1;
+        } else {
+            sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        }
 
         const count = await Product.countDocuments(query);
         const products = await Product.find(query)
             .populate('categories', 'name slug') // Peuple les noms et slugs des catégories
+            .sort(sort)
             .limit(pageSize)
-            .skip(pageSize * (page - 1))
-            .sort({ createdAt: -1 }); // Trie par date de création, les plus récents en premier
+            .skip(pageSize * (page - 1));
 
         res.json({
             products,
             page,
             pages: Math.ceil(count / pageSize),
-            count
+            totalPages: Math.ceil(count / pageSize),
+            currentPage: page,
+            count,
+            total: count
         });
     } catch (error) {
         console.error("Erreur lors de la récupération des produits:", error);
@@ -322,29 +442,136 @@ exports.getProductByIdAdmin = async (req, res) => {
 // @access  Private/Admin
 exports.updateProductAdmin = async (req, res) => {
     try {
+        console.log('=== Product Update Debug (Admin) ===');
+        console.log('req.body:', req.body);
+        console.log('req.files:', req.files);
+        console.log('req.files length:', req.files ? req.files.length : 0);
+        
         const product = await Product.findById(req.params.id);
 
-        if (product) {
-            // Mettre à jour tous les champs fournis
-            Object.keys(req.body).forEach(key => {
-                if (req.body[key] !== undefined) {
-                    product[key] = req.body[key];
-                }
-            });
-
-            product.updatedAt = Date.now();
-            const updatedProduct = await product.save();
-            await updatedProduct.populate('categories', 'name');
-
-            res.json(updatedProduct);
-        } else {
-            res.status(404).json({ message: 'Produit non trouvé.' });
+        if (!product) {
+            return res.status(404).json({ message: 'Produit non trouvé.' });
         }
+
+        const {
+            name,
+            description,
+            price,
+            sku,
+            categories,
+            stock,
+            variants,
+            dimensions,
+            materials,
+            woodEssence,
+            usage,
+            isFeatured,
+            isPublished,
+            tags,
+            promotion,
+            finish,
+            weight
+        } = req.body;
+
+        // Traiter les nouvelles images uploadées
+        let newImages = [];
+        if (req.files && req.files.length > 0) {
+            console.log('Processing new uploaded files...');
+            console.log('New files received:', req.files.map(f => ({
+                originalname: f.originalname,
+                filename: f.filename,
+                mimetype: f.mimetype,
+                size: f.size
+            })));
+            
+            newImages = processUploadedImages(req.files);
+            console.log('Processed new images:', newImages);
+        }
+
+        // Traiter les catégories
+        let processedCategories = categories;
+        if (typeof categories === 'string') {
+            try {
+                processedCategories = JSON.parse(categories);
+            } catch (e) {
+                processedCategories = [categories];
+            }
+        }
+
+        // Traiter la promotion si fournie
+        let processedPromotion = promotion;
+        if (promotion && typeof promotion === 'string') {
+            try {
+                processedPromotion = JSON.parse(promotion);
+            } catch (e) {
+                processedPromotion = undefined;
+            }
+        }
+
+        // Traiter les variantes si fournies
+        let processedVariants = variants;
+        if (variants && typeof variants === 'string') {
+            try {
+                processedVariants = JSON.parse(variants);
+            } catch (e) {
+                processedVariants = undefined;
+            }
+        }
+
+        // Traiter les tags si fournis
+        let processedTags = tags;
+        if (tags && typeof tags === 'string') {
+            try {
+                processedTags = JSON.parse(tags);
+            } catch (e) {
+                processedTags = tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+            }
+        }
+
+        // Mettre à jour les champs du produit
+        if (name) product.name = name;
+        if (description) product.description = description;
+        if (price) product.price = parseFloat(price);
+        if (sku) product.sku = sku;
+        if (processedCategories) product.categories = processedCategories;
+        if (stock !== undefined) product.stock = parseInt(stock);
+        if (processedVariants) product.variants = processedVariants;
+        if (dimensions) product.dimensions = dimensions;
+        if (materials) product.materials = materials;
+        if (woodEssence) product.woodEssence = woodEssence;
+        if (usage) product.usage = usage;
+        if (isFeatured !== undefined) product.isFeatured = isFeatured === 'true' || isFeatured === true;
+        if (isPublished !== undefined) product.isPublished = isPublished === 'true' || isPublished === true;
+        if (processedTags) product.tags = processedTags;
+        if (processedPromotion) product.promotion = processedPromotion;
+        if (finish) product.finish = finish;
+        if (weight) product.weight = parseFloat(weight);
+
+        // Ajouter les nouvelles images aux images existantes (ou les remplacer selon la logique souhaitée)
+        if (newImages.length > 0) {
+            // Pour l'instant, on remplace toutes les images par les nouvelles
+            // Vous pouvez modifier cette logique pour ajouter aux images existantes
+            product.images = newImages;
+        }
+
+        product.updatedAt = Date.now();
+        const updatedProduct = await product.save();
+        await updatedProduct.populate('categories', 'name');
+
+        console.log('Product updated successfully:', updatedProduct._id);
+        res.json(updatedProduct);
+
     } catch (error) {
         console.error(`Erreur lors de la mise à jour du produit ${req.params.id} (admin):`, error);
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(val => val.message);
             return res.status(400).json({ message: 'Données fournies invalides.', errors: messages });
+        }
+        if (error.code === 11000) {
+            return res.status(400).json({ message: 'Un produit avec ce SKU existe déjà.', field: error.keyValue });
+        }
+        if (error.kind === 'ObjectId') {
+            return res.status(404).json({ message: 'Produit non trouvé (ID mal formé).' });
         }
         res.status(500).json({ message: 'Erreur serveur lors de la mise à jour du produit.', error: error.message });
     }

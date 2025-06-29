@@ -16,7 +16,6 @@ const { protect, admin } = require('../middleware/auth.middleware');
 
 // --- Routes Publiques ---
 router.get('/', getAllCategories);
-router.get('/:idOrSlug', getCategoryByIdOrSlug); // Peut être un ID ou un slug
 
 // --- Routes Admin ---
 // Routes spécifiques pour l'admin (doivent être avant les routes génériques)
@@ -34,5 +33,8 @@ router.put('/:id', protect, admin, updateCategory);
 
 // Pour supprimer une catégorie (route générique, garder pour compatibilité)
 router.delete('/:id', protect, admin, deleteCategory);
+
+// Cette route doit être en dernier car elle capture tout /:idOrSlug
+router.get('/:idOrSlug', getCategoryByIdOrSlug); // Peut être un ID ou un slug
 
 module.exports = router;

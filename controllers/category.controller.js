@@ -6,6 +6,10 @@ const Product = require('../models/product.model'); // Pour vérifier si des pro
 // @access  Private/Admin
 exports.createCategory = async (req, res) => {
     try {
+        console.log('=== Category Creation Debug ===');
+        console.log('req.body:', req.body);
+        console.log('req.user:', req.user ? { id: req.user._id, role: req.user.role } : 'No user');
+        
         const { name, description, parentCategory, image, isFeatured } = req.body;
 
         if (!name) {
@@ -19,20 +23,43 @@ exports.createCategory = async (req, res) => {
             return res.status(400).json({ message: 'Une catégorie avec ce nom existe déjà.' });
         }
 
+        // Process image data - handle both string URL and object format
+        let processedImage = null;
+        if (image) {
+            if (typeof image === 'string') {
+                // If image is just a URL string, convert to object format
+                processedImage = {
+                    url: image,
+                    altText: name || 'Image de catégorie'
+                };
+            } else if (typeof image === 'object' && image.url) {
+                // If image is already an object with url property
+                processedImage = {
+                    url: image.url,
+                    altText: image.altText || name || 'Image de catégorie'
+                };
+            }
+        }
+
         const category = new Category({
             name,
             description,
             parentCategory: parentCategory || null,
-            image,
+            image: processedImage,
             isFeatured: isFeatured || false
         });
 
         const createdCategory = await category.save();
+        console.log('Category created successfully:', createdCategory._id);
         res.status(201).json(createdCategory);
     } catch (error) {
         console.error("Erreur lors de la création de la catégorie:", error);
         if (error.code === 11000) { // Erreur de duplicata MongoDB (ex: slug unique)
             return res.status(400).json({ message: 'Une catégorie avec ce nom/slug existe déjà.', field: error.keyValue });
+        }
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: 'Données fournies invalides.', errors: messages });
         }
         res.status(500).json({ message: 'Erreur serveur lors de la création de la catégorie.', error: error.message });
     }
@@ -93,11 +120,29 @@ exports.updateCategory = async (req, res) => {
         const { name, description, parentCategory, image, isFeatured, slug } = req.body;
         const category = await Category.findById(req.params.id);
 
+        // Process image data - handle both string URL and object format
+        let processedImage = image;
+        if (image !== undefined) {
+            if (typeof image === 'string') {
+                // If image is just a URL string, convert to object format
+                processedImage = image ? {
+                    url: image,
+                    altText: name || category.name || 'Image de catégorie'
+                } : null;
+            } else if (typeof image === 'object' && image !== null) {
+                // If image is an object, ensure it has the right structure
+                processedImage = {
+                    url: image.url || '',
+                    altText: image.altText || name || category.name || 'Image de catégorie'
+                };
+            }
+        }
+
         if (category) {
             category.name = name || category.name;
             category.description = description === undefined ? category.description : description;
             category.parentCategory = parentCategory === undefined ? category.parentCategory : (parentCategory || null);
-            category.image = image === undefined ? category.image : image;
+            category.image = processedImage === undefined ? category.image : processedImage;
             category.isFeatured = isFeatured === undefined ? category.isFeatured : isFeatured;
 
             // Si le nom change, le slug sera mis à jour par le hook pre-save
@@ -220,9 +265,31 @@ exports.updateCategoryAdmin = async (req, res) => {
         const category = await Category.findById(req.params.id);
 
         if (category) {
-            // Mettre à jour tous les champs fournis
+            // Process image data if provided - handle both string URL and object format
+            if (req.body.image !== undefined) {
+                const { image } = req.body;
+                let processedImage = image;
+                
+                if (typeof image === 'string') {
+                    // If image is just a URL string, convert to object format
+                    processedImage = image ? {
+                        url: image,
+                        altText: req.body.name || category.name || 'Image de catégorie'
+                    } : null;
+                } else if (typeof image === 'object' && image !== null) {
+                    // If image is an object, ensure it has the right structure
+                    processedImage = {
+                        url: image.url || '',
+                        altText: image.altText || req.body.name || category.name || 'Image de catégorie'
+                    };
+                }
+                
+                category.image = processedImage;
+            }
+            
+            // Mettre à jour tous les autres champs fournis
             Object.keys(req.body).forEach(key => {
-                if (req.body[key] !== undefined) {
+                if (req.body[key] !== undefined && key !== 'image') { // Skip image as we handled it above
                     category[key] = req.body[key];
                 }
             });

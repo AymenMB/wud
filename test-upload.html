@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Image Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .preview-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Image Upload for WUD E-commerce</h1>
+    
+    <div class="info result">
+        <h3>Instructions:</h3>
+        <ol>
+            <li>First, login as admin (email: admin@wud.com, password: admin123)</li>
+            <li>Fill out the required product information</li>
+            <li>Select one or more images to upload</li>
+            <li>Click "Create Product" to test the upload</li>
+        </ol>
+    </div>
+
+    <form id="test-form">
+        <div class="form-group">
+            <label for="email">Admin Email:</label>
+            <input type="email" id="email" value="admin@wud.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Admin Password:</label>
+            <input type="password" id="password" value="admin123" required>
+        </div>
+        
+        <div class="form-group">
+            <button type="button" id="login-btn">Login as Admin</button>
+        </div>
+        
+        <hr>
+        
+        <div class="form-group">
+            <label for="name">Product Name:</label>
+            <input type="text" id="name" value="Test Product" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="sku">SKU:</label>
+            <input type="text" id="sku" value="TEST-001" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" required>This is a test product for image upload testing.</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">Price (€):</label>
+            <input type="number" id="price" step="0.01" value="99.99" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="stock">Stock:</label>
+            <input type="number" id="stock" value="10" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="categories">Categories (JSON):</label>
+            <input type="text" id="categories" value='["67a29a13b985c2a9e4c46dd1"]' required>
+            <small>Use a real category ID from your database</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="images">Product Images:</label>
+            <input type="file" id="images" multiple accept="image/*" required>
+            <div id="preview-container" class="preview-container"></div>
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" id="submit-btn">Create Product</button>
+        </div>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001/api';
+        let authToken = null;
+
+        // Image preview
+        document.getElementById('images').addEventListener('change', function(e) {
+            const container = document.getElementById('preview-container');
+            container.innerHTML = '';
+            
+            Array.from(e.target.files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.className = 'preview-image';
+                    img.src = URL.createObjectURL(file);
+                    container.appendChild(img);
+                }
+            });
+        });
+
+        // Login function
+        document.getElementById('login-btn').addEventListener('click', async function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.token;
+                    showResult('Login successful! Getting categories...', 'success');
+                    
+                    // Load categories after successful login
+                    try {
+                        const categoriesResponse = await fetch(`${API_BASE}/categories`, {
+                            headers: {
+                                'Authorization': `Bearer ${authToken}`
+                            }
+                        });
+                        const categoriesData = await categoriesResponse.json();
+                        if (categoriesData.categories && categoriesData.categories.length > 0) {
+                            const firstCategoryId = categoriesData.categories[0]._id;
+                            document.getElementById('categories').value = `["${firstCategoryId}"]`;
+                            showResult(`Login successful! Using category: ${categoriesData.categories[0].name}`, 'success');
+                        }
+                    } catch (catError) {
+                        console.warn('Could not load categories:', catError);
+                        showResult('Login successful! You can now create products. (Could not auto-load categories)', 'success');
+                    }
+                } else {
+                    showResult(`Login failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Login error: ${error.message}`, 'error');
+            }
+        });
+
+        // Form submission
+        document.getElementById('test-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!authToken) {
+                showResult('Please login first!', 'error');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating...';
+            
+            try {
+                const formData = new FormData();
+                
+                // Add text fields
+                formData.append('name', document.getElementById('name').value);
+                formData.append('sku', document.getElementById('sku').value);
+                formData.append('description', document.getElementById('description').value);
+                formData.append('price', document.getElementById('price').value);
+                formData.append('stock', document.getElementById('stock').value);
+                formData.append('categories', document.getElementById('categories').value);
+                formData.append('isPublished', 'true');
+                formData.append('isFeatured', 'false');
+                
+                // Add image files
+                const imageFiles = document.getElementById('images').files;
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append('images', imageFiles[i]);
+                }
+                
+                console.log('FormData contents:');
+                for (let [key, value] of formData.entries()) {
+                    if (value instanceof File) {
+                        console.log(`${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+                    } else {
+                        console.log(`${key}: ${value}`);
+                    }
+                }
+                
+                const response = await fetch(`${API_BASE}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult(`Product created successfully! ID: ${result._id}`, 'success');
+                    console.log('Created product:', result);
+                } else {
+                    showResult(`Error creating product: ${result.message}`, 'error');
+                    console.error('Error response:', result);
+                }
+                
+            } catch (error) {
+                showResult(`Request error: ${error.message}`, 'error');
+                console.error('Request error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Product';
+            }
+        });
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = `<h3>Result:</h3><p>${message}</p>`;
+        }
+    </script>
+</body>
+</html>

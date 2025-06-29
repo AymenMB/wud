@@ -1,4 +1,4 @@
-import { customRequestAPI } from '../api.js';
+import { customRequestAdminAPI } from '../api.js';
 import { devLog } from '../uiUtils.js';
 
 // État global pour la gestion des demandes sur mesure
@@ -190,7 +190,7 @@ async function loadCustomRequestsWithFilters() {
         params.sortBy = customRequestManagementState.currentFilters.sortBy;
         params.sortOrder = customRequestManagementState.currentFilters.sortOrder;
 
-        const response = await customRequestAPI.getAllAdmin(params);
+        const response = await customRequestAdminAPI.getAll(params);
         
         renderCustomRequestTable(response.customRequests || response.requests || response);
         if (response.page) {
@@ -256,7 +256,7 @@ window.changeCustomRequestPage = function(newPage) {
 // Fonctions globales pour les actions
 window.viewCustomRequest = async function(requestId) {
     try {
-        const request = await customRequestAPI.getByIdAdmin(requestId);
+        const request = await customRequestAdminAPI.getById(requestId);
         showCustomRequestDetailModal(request);
     } catch (error) {
         console.error('Erreur lors du chargement de la demande:', error);
@@ -271,7 +271,7 @@ window.editCustomRequestStatus = function(requestId, currentStatus) {
 window.deleteCustomRequest = async function(requestId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette demande sur mesure ?')) {
         try {
-            await customRequestAPI.deleteAdmin(requestId);
+            await customRequestAdminAPI.delete(requestId);
             loadCustomRequestsWithFilters();
         } catch (error) {
             console.error('Erreur lors de la suppression:', error);
@@ -451,7 +451,7 @@ function showCustomRequestStatusModal(requestId, currentStatus) {
         const newStatus = document.getElementById('new-custom-request-status').value;
         
         try {
-            await customRequestAPI.updateAdmin(requestId, { status: newStatus });
+            await customRequestAdminAPI.update(requestId, { status: newStatus });
             closeCustomRequestStatusModal();
             loadCustomRequestsWithFilters();
             
@@ -529,7 +529,7 @@ window.addAdminNotes = function(requestId) {
             // Recharger le modal de détail s'il est ouvert
             const detailModal = document.getElementById('custom-request-detail-modal');
             if (detailModal) {
-                const request = await customRequestAPI.getByIdAdmin(requestId);
+                const request = await customRequestAdminAPI.getById(requestId);
                 detailModal.remove();
                 showCustomRequestDetailModal(request);
             }

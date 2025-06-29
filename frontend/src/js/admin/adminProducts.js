@@ -36,7 +36,10 @@ function renderProductTable(products, containerId = 'admin-product-list-table-bo
             <td class="py-3 px-3">
                 <div class="flex items-center">
                     ${product.images && product.images.length > 0 ? 
-                        `<img src="${product.images[0].url || product.images[0]}" alt="${product.name}" class="w-10 h-10 rounded object-cover mr-3">` : 
+                        `<img src="${product.images[0].url && product.images[0].url.startsWith('http') ? product.images[0].url : 
+                            (product.images[0].url && product.images[0].url.startsWith('/uploads') ? 
+                                'http://localhost:3001' + product.images[0].url : 
+                                product.images[0].url || product.images[0])}" alt="${product.name}" class="w-10 h-10 rounded object-cover mr-3">` : 
                         '<div class="w-10 h-10 bg-gray-200 rounded mr-3 flex items-center justify-center text-xs text-gray-500">📦</div>'
                     }
                     <div>
@@ -448,7 +451,13 @@ async function renderProductForm(product = {}, containerId = 'admin-product-form
                         accept="image/*" 
                         class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-wud-primary focus:border-wud-primary"
                     >
-                    <p class="text-sm text-gray-500 mt-1">Sélectionnez une ou plusieurs images (JPG, PNG, WebP)</p>
+                    <p class="text-sm text-gray-500 mt-1">Sélectionnez une ou plusieurs images (JPG, PNG, WebP, max 5MB chacune)</p>
+                    
+                    <!-- Zone de prévisualisation des nouvelles images -->
+                    <div id="image-preview-container" class="mt-3 hidden">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Aperçu des nouvelles images :</p>
+                        <div id="image-preview-grid" class="flex gap-2 flex-wrap"></div>
+                    </div>
                     
                     ${product.images && product.images.length > 0 ? `
                         <div class="mt-3">
@@ -456,7 +465,7 @@ async function renderProductForm(product = {}, containerId = 'admin-product-form
                             <div class="flex gap-2 flex-wrap">
                                 ${product.images.map((img, index) => `
                                     <div class="relative">
-                                        <img src="${img.url || img}" alt="Image ${index + 1}" class="w-20 h-20 object-cover rounded border">
+                                        <img src="${img.url?.startsWith('http') ? img.url : (img.url?.startsWith('/uploads') ? `http://localhost:3001${img.url}` : (img.url || img))}" alt="Image ${index + 1}" class="w-20 h-20 object-cover rounded border">
                                         <button type="button" 
                                                 class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 text-xs hover:bg-red-600 remove-image-btn" 
                                                 data-image-index="${index}">×</button>
@@ -674,47 +683,159 @@ function attachProductFormEventListeners() {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(form);
+        
         const mode = form.dataset.mode;
         const productId = form.dataset.productId;
 
         const categoriesSelect = form.querySelector('#product-categories');
-        const selectedCategories = categoriesSelect ? Array.from(categoriesSelect.selectedOptions).map(opt => opt.value) : [];
+        const selectedCategories = categoriesSelect ? Array.from(categoriesSelect.selectedOptions).map(opt => opt.value).filter(val => val && val.trim() !== '') : [];
 
-        const productData = {
-            name: formData.get('name'),
-            sku: formData.get('sku'),
-            price: parseFloat(formData.get('price')),
-            stock: parseInt(formData.get('stock')),
-            description: formData.get('description'),
-            categories: selectedCategories,
-            isPublished: form.querySelector('#product-published').checked,
-            isFeatured: form.querySelector('#product-featured').checked,
-            materials: formData.get('materials'),
-            dimensions: formData.get('dimensions'),
-            finish: formData.get('finish'),
-            weight: formData.get('weight') ? parseFloat(formData.get('weight')) : undefined
-        };
+        // Validation des catégories
+        if (selectedCategories.length === 0) {
+            displayMessage(formContainer, 'Veuillez sélectionner au moins une catégorie.', 'error');
+            setLoadingState(submitButton, false);
+            return;
+        }
+
+        console.log('Selected categories:', selectedCategories);
+
+        // Créer un FormData pour gérer les fichiers
+        const formData = new FormData();
+        
+        // Ajouter tous les champs texte
+        formData.append('name', form.querySelector('#product-name').value);
+        formData.append('sku', form.querySelector('#product-sku').value);
+        formData.append('description', form.querySelector('#product-description').value);
+        formData.append('price', form.querySelector('#product-price').value);
+        formData.append('stock', form.querySelector('#product-stock').value);
+        formData.append('categories', JSON.stringify(selectedCategories));
+        formData.append('isPublished', form.querySelector('#product-published').checked);
+        formData.append('isFeatured', form.querySelector('#product-featured').checked);
+        
+        // Ajouter les champs optionnels
+        const materials = form.querySelector('#product-materials').value;
+        if (materials) formData.append('materials', materials);
+        
+        const dimensions = form.querySelector('#product-dimensions').value;
+        if (dimensions) formData.append('dimensions', dimensions);
+        
+        const finish = form.querySelector('#product-finish').value;
+        if (finish) formData.append('finish', finish);
+        
+        const weight = form.querySelector('#product-weight').value;
+        if (weight) formData.append('weight', weight);
+
+        // Ajouter les fichiers images
+        const imageFiles = form.querySelector('#product-images').files;
+        console.log('Image files to upload:', imageFiles);
+        if (imageFiles && imageFiles.length > 0) {
+            console.log(`Adding ${imageFiles.length} image files to FormData`);
+            for (let i = 0; i < imageFiles.length; i++) {
+                console.log(`Adding file ${i}:`, imageFiles[i].name, imageFiles[i].size, imageFiles[i].type);
+                formData.append('images', imageFiles[i]);
+            }
+        } else {
+            console.log('No image files to upload');
+        }
 
         setLoadingState(submitButton, true, mode === 'create' ? 'Création...' : 'Sauvegarde...');
 
         try {
+            console.log('Submitting product form with mode:', mode);
+            console.log('FormData contents:');
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    console.log(`${key}: File(${value.name}, ${value.size} bytes, ${value.type})`);
+                } else {
+                    console.log(`${key}: ${value}`);
+                }
+            }
+            
             if (mode === 'create') {
-                await productAdminAPI.create(productData);
+                console.log('Creating new product...');
+                const result = await productAdminAPI.create(formData);
+                console.log('Product created successfully:', result);
                 displayMessage(formContainer, 'Produit créé avec succès.', 'success');
             } else {
-                await productAdminAPI.update(productId, productData);
+                console.log('Updating product with ID:', productId);
+                const result = await productAdminAPI.update(productId, formData);
+                console.log('Product updated successfully:', result);
                 displayMessage(formContainer, 'Produit mis à jour avec succès.', 'success');
             }
             if (formContainer) formContainer.innerHTML = '';
             await loadProductsWithFilters();
         } catch (error) {
+            console.error(`Error ${mode === 'create' ? 'creating' : 'updating'} product:`, error);
             appError(`Error ${mode === 'create' ? 'creating' : 'updating'} product`, error);
-            displayMessage(formContainer, error.message || 'Erreur serveur lors de l\'opération.', 'error');
+            
+            let errorMessage = 'Erreur serveur lors de l\'opération.';
+            if (error.data && error.data.message) {
+                errorMessage = error.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            displayMessage(formContainer, errorMessage, 'error');
         } finally {
             setLoadingState(submitButton, false);
         }
     });
+
+    // Event listener pour la prévisualisation des images
+    const imageInput = document.getElementById('product-images');
+    const previewContainer = document.getElementById('image-preview-container');
+    const previewGrid = document.getElementById('image-preview-grid');
+    
+    if (imageInput && previewContainer && previewGrid) {
+        imageInput.addEventListener('change', function(event) {
+            const files = Array.from(event.target.files);
+            
+            if (files.length === 0) {
+                previewContainer.classList.add('hidden');
+                return;
+            }
+            
+            // Vérifier la taille des fichiers
+            const validFiles = [];
+            for (const file of files) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB
+                    displayMessage(formContainer, `Le fichier ${file.name} est trop volumineux (max 5MB).`, 'error');
+                    continue;
+                }
+                if (!file.type.startsWith('image/')) {
+                    displayMessage(formContainer, `Le fichier ${file.name} n'est pas une image.`, 'error');
+                    continue;
+                }
+                validFiles.push(file);
+            }
+            
+            if (validFiles.length === 0) {
+                previewContainer.classList.add('hidden');
+                imageInput.value = '';
+                return;
+            }
+            
+            // Afficher les aperçus
+            previewGrid.innerHTML = '';
+            validFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'relative';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Aperçu ${index + 1}" class="w-20 h-20 object-cover rounded border">
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 rounded-b">
+                            ${file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name}
+                        </div>
+                    `;
+                    previewGrid.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            previewContainer.classList.remove('hidden');
+        });
+    }
 
     // Event listeners pour les boutons d'annulation et fermeture
     const cancelBtn = document.getElementById('cancel-product-form');

@@ -30,7 +30,7 @@ function renderCartSummary(cart) {
         return `
             <div class="flex justify-between items-start py-2 border-b border-gray-100 last:border-b-0">
                 <div class="flex items-start">
-                    <img src="${product.images?.[0]?.url || '/src/assets/images/placeholder-product.svg'}" alt="${product.name}" class="w-12 h-12 object-cover rounded-md mr-3">
+                    <img src="${product.images?.[0]?.url?.startsWith('http') ? product.images[0].url : (product.images?.[0]?.url?.startsWith('/uploads') ? `http://localhost:3001${product.images[0].url}` : '/src/assets/images/placeholder-product.svg')}" alt="${product.name}" class="w-12 h-12 object-cover rounded-md mr-3">
                     <div>
                         <p class="font-medium text-wud-primary text-sm">${product.name}</p>
                         ${item.selectedVariant?.optionValue ? `<p class="text-xs text-gray-500">${item.selectedVariant.name}: ${item.selectedVariant.optionValue}</p>` : ''}

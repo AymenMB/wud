@@ -10,14 +10,23 @@ function createWishlistProductCard(item) {
     if (!product) return '';
 
     const price = parseFloat(product.price).toFixed(2);
-    const imageUrl = product.images && product.images.length > 0 ? product.images[0].url : 'https://via.placeholder.com/300x300.png/A07C5B/FFFFFF?text=Produit';
-    const imageAlt = product.images && product.images.length > 0 ? product.images[0].altText || product.name : product.name;
+    const imageUrl = product.images && product.images.length > 0 ? 
+        (product.images[0].url || product.images[0]) : 
+        '/src/assets/images/product-placeholder.svg';
+    
+    // Make sure the image URL is properly formatted
+    const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
+        (imageUrl.startsWith('/uploads') ? `http://localhost:3001${imageUrl}` : imageUrl);
+    
+    const imageAlt = product.images && product.images.length > 0 ? 
+        (product.images[0].altText || product.name) : 
+        product.name;
 
     return `
         <div class="group bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col p-4 relative" data-product-id="${product._id}">
             <a href="/src/pages/product-detail.html?id=${product._id}" class="block mb-3">
                 <div class="h-48 sm:h-56 bg-gray-200 rounded-md overflow-hidden">
-                    <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
+                    <img src="${fullImageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
                 </div>
             </a>
             <h3 class="text-md font-semibold text-wud-primary mb-1 line-clamp-2">

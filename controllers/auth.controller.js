@@ -166,3 +166,32 @@ exports.updateUserProfile = async (req, res) => {
     }
 };
 
+// @desc    Actualiser le token de l'utilisateur connecté
+// @route   POST /api/auth/refresh
+// @access  Private (nécessite le middleware protect)
+exports.refreshToken = async (req, res) => {
+    try {
+        // req.user est peuplé par le middleware `protect`
+        const user = req.user;
+
+        if (user) {
+            // Générer un nouveau token JWT
+            const newToken = generateToken(user._id, user.role);
+
+            res.json({
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role,
+                token: newToken, // Nouveau token
+            });
+        } else {
+            res.status(404).json({ message: 'Utilisateur non trouvé.' });
+        }
+    } catch (error) {
+        console.error('Erreur lors du rafraîchissement du token:', error);
+        res.status(500).json({ message: 'Erreur serveur lors du rafraîchissement du token.', error: error.message });
+    }
+};
+

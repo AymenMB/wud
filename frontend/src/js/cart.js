@@ -43,7 +43,7 @@ export async function updateCartDisplay() {
                 return `
                     <div class="flex items-center justify-between py-3 border-b border-gray-200" data-cart-item-id="${product._id}" data-variant="${item.selectedVariant?.optionValue || ''}">
                         <div class="flex items-center">
-                            <img src="${product.images?.[0]?.url || '/src/assets/images/placeholder-product.svg'}" alt="${product.name}" class="w-16 h-16 object-cover rounded-md mr-3">
+                            <img src="${product.images?.[0]?.url?.startsWith('http') ? product.images[0].url : (product.images?.[0]?.url?.startsWith('/uploads') ? `http://localhost:3001${product.images[0].url}` : '/src/assets/images/placeholder-product.svg')}" alt="${product.name}" class="w-16 h-16 object-cover rounded-md mr-3">
                             <div>
                                 <h4 class="font-semibold text-sm text-wud-primary">${product.name}</h4>
                                 ${item.selectedVariant?.optionValue ? `<p class="text-xs text-gray-500">${item.selectedVariant.name}: ${item.selectedVariant.optionValue}</p>` : ''}
