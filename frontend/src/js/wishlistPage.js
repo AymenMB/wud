@@ -13,11 +13,17 @@ function createWishlistProductCard(item) {
     const imageUrl = product.images && product.images.length > 0 ? 
         (product.images[0].url || product.images[0]) : 
         '/src/assets/images/product-placeholder.svg';
-    
-    // Make sure the image URL is properly formatted
+    // If there are multiple images, use the first as main, and show thumbnails
+    let thumbnailsHtml = '';
+    if (product.images && product.images.length > 1) {
+        thumbnailsHtml = `<div class="flex gap-2 mt-2">` + product.images.map((img, idx) => {
+            const url = img.url || img;
+            const fullUrl = url.startsWith('http') ? url : (url.startsWith('/uploads') ? `http://localhost:3001${url}` : url);
+            return `<img src="${fullUrl}" alt="Miniature ${idx + 1}" class="w-10 h-10 object-cover rounded border border-gray-300">`;
+        }).join('') + `</div>`;
+    }
     const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
         (imageUrl.startsWith('/uploads') ? `http://localhost:3001${imageUrl}` : imageUrl);
-    
     const imageAlt = product.images && product.images.length > 0 ? 
         (product.images[0].altText || product.name) : 
         product.name;
@@ -27,6 +33,7 @@ function createWishlistProductCard(item) {
             <a href="/src/pages/product-detail.html?id=${product._id}" class="block mb-3">
                 <div class="h-48 sm:h-56 bg-gray-200 rounded-md overflow-hidden">
                     <img src="${fullImageUrl}" alt="${imageAlt}" class="w-full h-full object-cover">
+                    ${thumbnailsHtml}
                 </div>
             </a>
             <h3 class="text-md font-semibold text-wud-primary mb-1 line-clamp-2">

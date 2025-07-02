@@ -581,6 +581,28 @@ async function renderProductForm(product = {}, containerId = 'admin-product-form
         }, 100);
     }
 
+    // Track which existing images to keep
+    let imagesToKeep = product.images ? [...product.images] : [];
+
+    // Store imagesToKeep on the form DOM element for access in submit handler
+    setTimeout(() => {
+        const form = document.getElementById('product-form');
+        if (form) {
+            form._imagesToKeep = imagesToKeep;
+        }
+    }, 0);
+
+    // Event listener for removing existing images
+    formContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-image-btn')) {
+            const idx = parseInt(e.target.dataset.imageIndex);
+            if (!isNaN(idx) && imagesToKeep[idx]) {
+                imagesToKeep.splice(idx, 1);
+                renderProductForm({ ...product, images: imagesToKeep }, containerId, mode);
+            }
+        }
+    });
+
     attachProductFormEventListeners();
 }
 
@@ -736,6 +758,14 @@ function attachProductFormEventListeners() {
             }
         } else {
             console.log('No image files to upload');
+        }
+
+        // Use imagesToKeep from the form property
+        const imagesToKeepArr = form._imagesToKeep || [];
+        if (imagesToKeepArr.length > 0) {
+            formData.append('existingImages', JSON.stringify(imagesToKeepArr.map(img => img.url)));
+        } else {
+            formData.append('existingImages', JSON.stringify([]));
         }
 
         setLoadingState(submitButton, true, mode === 'create' ? 'Création...' : 'Sauvegarde...');

@@ -77,24 +77,40 @@ function displayProductDetails(product) {
     const mainImage = document.getElementById('main-product-image');
     const thumbnailsContainer = document.getElementById('thumbnail-images');
     if (product.images && product.images.length > 0) {
-        const firstImageUrl = product.images[0].url || product.images[0];
-        const fullFirstImageUrl = firstImageUrl.startsWith('http') ? firstImageUrl : 
-            (firstImageUrl.startsWith('/uploads') ? `http://localhost:3001${firstImageUrl}` : firstImageUrl);
-            
+        // Show all images as thumbnails and allow switching main image
+        let selectedImageIndex = 0;
+        let currentImages = product.images.map(img => img.url || img);
+        const fullImageUrl = (url) => url.startsWith('http') ? url : (url.startsWith('/uploads') ? `http://localhost:3001${url}` : url);
+
+        // Set main image
         if(mainImage) {
-            mainImage.src = fullFirstImageUrl;
+            mainImage.src = fullImageUrl(currentImages[0]);
             mainImage.alt = product.images[0].altText || product.name;
         }
+        // Render thumbnails
         if(thumbnailsContainer) {
             thumbnailsContainer.innerHTML = product.images.map((img, index) => {
                 const imageUrl = img.url || img;
-                const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
-                    (imageUrl.startsWith('/uploads') ? `http://localhost:3001${imageUrl}` : imageUrl);
+                const fullImgUrl = fullImageUrl(imageUrl);
                 return `
-                <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 ${index === 0 ? 'border-wud-accent' : 'border-transparent'} hover:border-wud-accent focus:border-wud-accent outline-none" data-image-url="${fullImageUrl}" data-image-alt="${img.altText || product.name}">
-                    <img src="${fullImageUrl}" alt="Miniature ${index + 1}" class="w-full h-full object-cover pointer-events-none">
+                <button class="aspect-square bg-gray-200 rounded overflow-hidden border-2 ${index === 0 ? 'border-wud-accent' : 'border-transparent'} hover:border-wud-accent focus:border-wud-accent outline-none thumbnail-btn" data-image-index="${index}" data-image-url="${fullImgUrl}" data-image-alt="${img.altText || product.name}">
+                    <img src="${fullImgUrl}" alt="Miniature ${index + 1}" class="w-full h-full object-cover pointer-events-none">
                 </button>
             `}).join('');
+        }
+        // Add event listener for thumbnail click to switch main image
+        if(thumbnailsContainer) {
+            thumbnailsContainer.querySelectorAll('.thumbnail-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.imageIndex);
+                    if(mainImage) {
+                        mainImage.src = this.dataset.imageUrl;
+                        mainImage.alt = this.dataset.imageAlt;
+                    }
+                    thumbnailsContainer.querySelectorAll('.thumbnail-btn').forEach(b => b.classList.remove('border-wud-accent'));
+                    this.classList.add('border-wud-accent');
+                });
+            });
         }
     } else {
         if(mainImage) {

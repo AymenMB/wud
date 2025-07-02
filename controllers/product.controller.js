@@ -547,11 +547,28 @@ exports.updateProductAdmin = async (req, res) => {
         if (finish) product.finish = finish;
         if (weight) product.weight = parseFloat(weight);
 
-        // Ajouter les nouvelles images aux images existantes (ou les remplacer selon la logique souhaitée)
+        // Support for keeping/removing existing images and appending new ones
+        let imagesToKeep = product.images || [];
+        if (req.body.existingImages) {
+            // existingImages can be a JSON string or array
+            let existingImagesArr = req.body.existingImages;
+            if (typeof existingImagesArr === 'string') {
+                try {
+                    existingImagesArr = JSON.parse(existingImagesArr);
+                } catch (e) {
+                    existingImagesArr = [];
+                }
+            }
+            // Only keep images whose URLs are in the provided array
+            imagesToKeep = product.images.filter(img => existingImagesArr.includes(img.url));
+        }
+
         if (newImages.length > 0) {
-            // Pour l'instant, on remplace toutes les images par les nouvelles
-            // Vous pouvez modifier cette logique pour ajouter aux images existantes
-            product.images = newImages;
+            // Append new images to the kept images
+            product.images = imagesToKeep.concat(newImages);
+        } else if (req.body.existingImages) {
+            // No new images, just update to the kept images
+            product.images = imagesToKeep;
         }
 
         product.updatedAt = Date.now();
